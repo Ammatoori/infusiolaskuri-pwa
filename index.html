@@ -6,7 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="manifest" href="manifest.webmanifest" />
   <meta name="theme-color" content="#1b5e20" />
-
   <style>
     body {
       font-family: system-ui, sans-serif;
@@ -14,7 +13,6 @@
       padding: 0.5rem;
       background: #f5f5f5;
     }
-
     .sheet {
       background: #ffffff;
       border: 1px solid #bfbfbf;
@@ -23,43 +21,36 @@
       max-width: 900px;
       margin: 0 auto;
     }
-
     .sheet-title {
       font-weight: 700;
       font-size: 1.2rem;
       margin-bottom: 0.5rem;
     }
-
     table.grid {
       border-collapse: collapse;
       width: 100%;
       table-layout: fixed;
       font-size: 0.9rem;
     }
-
     table.grid td,
     table.grid th {
       border: 1px solid #d0d0d0;
       padding: 4px 6px;
       vertical-align: middle;
     }
-
     table.grid th {
       background: #e6e6e6;
       font-weight: 700;
       text-align: center;
     }
-
     .label-cell {
       background: #f9f9f9;
       font-weight: 500;
       width: 38%;
     }
-
     .value-cell {
       width: 62%;
     }
-
     .input-cell input,
     .input-cell select {
       width: 100%;
@@ -69,17 +60,14 @@
       font: inherit;
       padding: 0;
     }
-
     .readonly-cell {
       background: #f2f2f2;
       font-weight: 500;
     }
-
     .result-cell {
       background: #e8f5e9;
       font-weight: 600;
     }
-
     .separator td {
       background: #d9d9d9;
       height: 6px;
@@ -88,15 +76,11 @@
     }
   </style>
 </head>
-
 <body>
   <div class="sheet">
     <div class="sheet-title">Infuusiolaskuri</div>
-
     <table class="grid">
-
       <tr><th colspan="2">Syöte</th></tr>
-
       <tr>
         <td class="label-cell">Lääke</td>
         <td class="input-cell value-cell">
@@ -108,79 +92,3 @@
             <option value="dobutamine">Dobutamine 5 mg/ml</option>
             <option value="milrinone">Milrinone 1 mg/ml</option>
             <option value="ketamine">Ketamine 25 mg/ml</option>
-            <option value="propofol">Propofol 20 mg/ml</option>
-            <option value="remifentanyl">Remifentanyl 50 µg/ml</option>
-          </select>
-        </td>
-      </tr>
-
-      <tr>
-        <td class="label-cell">Paino</td>
-        <td class="input-cell value-cell">
-          <input type="number" id="weight" step="0.1" />
-        </td>
-      </tr>
-
-      <tr>
-        <td class="label-cell">Yksikkö</td>
-        <td class="readonly-cell value-cell">kg</td>
-      </tr>
-
-      <tr>
-        <td class="label-cell">Vahvuus</td>
-        <td class="readonly-cell value-cell">
-          <input type="text" id="strength" readonly />
-        </td>
-      </tr>
-
-      <tr class="separator"><td colspan="2"></td></tr>
-
-      <tr>
-        <td class="label-cell">Tavoitettu annos (mg/kg/h)</td>
-        <td class="input-cell value-cell">
-          <input type="number" id="doseMgKgH" step="0.001" />
-        </td>
-      </tr>
-
-      <tr>
-        <td class="label-cell">Tavoitettu annos (µg/kg/min)</td>
-        <td class="input-cell value-cell">
-          <input type="number" id="doseUgKgMin" step="0.001" />
-        </td>
-      </tr>
-
-      <tr class="separator"><td colspan="2"></td></tr>
-
-      <tr><th colspan="2">Laskettu</th></tr>
-
-      <tr>
-        <td class="label-cell">mg/h</td>
-        <td class="result-cell value-cell"><span id="mgH">0</span></td>
-      </tr>
-
-      <tr>
-        <td class="label-cell">ml/h</td>
-        <td class="result-cell value-cell"><span id="mlH">0</span></td>
-      </tr>
-
-      <tr>
-        <td class="label-cell">mg/kg/h</td>
-        <td class="result-cell value-cell"><span id="mgKgH">0</span></td>
-      </tr>
-
-      <tr>
-        <td class="label-cell">µg/kg/h</td>
-        <td class="result-cell value-cell"><span id="ugKgH">0</span></td>
-      </tr>
-
-      <tr>
-        <td class="label-cell">µg/kg/min</td>
-        <td class="result-cell value-cell"><span id="ugKgMin">0</span></td>
-      </tr>
-
-    </table>
-  </div>
-
-  <script src="app.js"></script>
-</body>
-</html>
