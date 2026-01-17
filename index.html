@@ -6,191 +6,182 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="manifest" href="manifest.webmanifest" />
   <meta name="theme-color" content="#1b5e20" />
-  <style>
-.separator td {
-  background: #e0e0e0;
-  height: 6px;
-  padding: 0;
-  border: none;
-}
 
+  <style>
     body {
       font-family: system-ui, sans-serif;
       margin: 0;
       padding: 0.5rem;
       background: #f5f5f5;
     }
+
     .sheet {
       background: #ffffff;
-      border: 1px solid #c0c0c0;
+      border: 1px solid #bfbfbf;
       border-radius: 4px;
       padding: 0.5rem;
-      box-shadow: 0 1px 3px rgba(0,0,0,.1);
       max-width: 900px;
       margin: 0 auto;
     }
+
     .sheet-title {
       font-weight: 700;
-      font-size: 1.1rem;
+      font-size: 1.2rem;
       margin-bottom: 0.5rem;
     }
+
     table.grid {
       border-collapse: collapse;
       width: 100%;
       table-layout: fixed;
       font-size: 0.9rem;
     }
-    table.grid th,
-    table.grid td {
+
+    table.grid td,
+    table.grid th {
       border: 1px solid #d0d0d0;
-      padding: 0.25rem 0.35rem;
+      padding: 4px 6px;
       vertical-align: middle;
     }
+
     table.grid th {
-      background: #f0f0f0;
-      font-weight: 600;
+      background: #e6e6e6;
+      font-weight: 700;
       text-align: center;
     }
+
     .label-cell {
       background: #f9f9f9;
       font-weight: 500;
-      width: 35%;
+      width: 38%;
     }
-    .input-cell,
+
     .value-cell {
-      background: #ffffff;
+      width: 62%;
     }
+
     .input-cell input,
     .input-cell select {
       width: 100%;
-      box-sizing: border-box;
       border: none;
       outline: none;
+      background: transparent;
       font: inherit;
       padding: 0;
-      margin: 0;
-      background: transparent;
     }
-    .input-cell input[type="number"]::-webkit-outer-spin-button,
-    .input-cell input[type="number"]::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
-    .input-cell input[type="number"] {
-      -moz-appearance: textfield;
-    }
+
     .readonly-cell {
-      background: #fdfdfd;
-      color: #000;
+      background: #f2f2f2;
+      font-weight: 500;
     }
+
     .result-cell {
       background: #e8f5e9;
       font-weight: 600;
     }
-    .warn-row td {
-      background: #ffebee;
-      color: #b71c1c;
+
+    .separator td {
+      background: #d9d9d9;
+      height: 6px;
+      padding: 0;
+      border: none;
+    }
+
+    /* Ошибочный ввод */
+    .error-cell {
+      background: #ffe6e6 !important;
+      color: #a30000 !important;
       font-weight: 600;
     }
-    .center {
-      text-align: center;
+
+    /* Превышение дозы */
+    .high-dose {
+      background: #ffcccc !important;
+      color: #a30000 !important;
+      font-weight: 700;
     }
   </style>
 </head>
+
 <body>
   <div class="sheet">
-  <div class="sheet-title">Infuusiolaskuri</div>
+    <div class="sheet-title">Infuusiolaskuri</div>
 
-  <table class="grid">
+    <table class="grid">
 
-    <!-- Блок: Ввод -->
-    <tr><th colspan="2">Syöte</th></tr>
+      <tr><th colspan="2">Syöte</th></tr>
 
-    <tr>
-      <td class="label-cell">Lääke</td>
-      <td class="input-cell">
-        <select id="drug">
-          <option value="">Valitse...</option>
-          <option value="adrenalin">Adrenalin 10 µg/ml</option>
-          <option value="nor40">Noradrenalin 40 µg/ml</option>
-          <option value="nor80">Noradrenalin 80 µg/ml</option>
-          <option value="dobutamine">Dobutamine 5 mg/ml</option>
-          <option value="milrinone">Milrinone 1 mg/ml</option>
-          <option value="ketamine">Ketamine 25 mg/ml</option>
-          <option value="propofol">Propofol 20 mg/ml</option>
-          <option value="remifentanyl">Remifentanyl 50 µg/ml</option>
-        </select>
-      </td>
-    </tr>
+      <tr>
+        <td class="label-cell">Lääke</td>
+        <td class="input-cell value-cell">
+          <select id="drug"></select>
+        </td>
+      </tr>
 
-    <tr>
-      <td class="label-cell">Paino (kg)</td>
-      <td class="input-cell">
-        <input type="number" id="weight" min="0" step="0.1" />
-      </td>
-    </tr>
+      <tr>
+        <td class="label-cell">Paino (kg)</td>
+        <td class="input-cell value-cell" id="weightCell">
+          <input type="number" id="weight" step="0.1" />
+        </td>
+      </tr>
 
-    <tr>
-      <td class="label-cell">Vahvuus</td>
-      <td class="readonly-cell value-cell">
-        <input type="text" id="strength" readonly />
-      </td>
-    </tr>
+      <tr>
+        <td class="label-cell">Vahvuus</td>
+        <td class="readonly-cell value-cell">
+          <input type="text" id="strength" readonly />
+        </td>
+      </tr>
 
-    <!-- Разделитель -->
-    <tr class="separator"><td colspan="2"></td></tr>
+      <tr class="separator"><td colspan="2"></td></tr>
 
-    <tr>
-      <td class="label-cell">Tavoitettu annos (mg/kg/h)</td>
-      <td class="input-cell">
-        <input type="number" id="doseMgKgH" min="0" step="0.001" />
-      </td>
-    </tr>
+      <tr>
+        <td class="label-cell">Tavoitettu annos (mg/kg/h)</td>
+        <td class="input-cell value-cell" id="doseMgCell">
+          <input type="number" id="doseMgKgH" step="0.001" />
+        </td>
+      </tr>
 
-    <tr>
-      <td class="label-cell">Tavoitettu annos (µg/kg/min)</td>
-      <td class="input-cell">
-        <input type="number" id="doseUgKgMin" min="0" step="0.001" />
-      </td>
-    </tr>
+      <tr>
+        <td class="label-cell">Tavoitettu annos (µg/kg/min)</td>
+        <td class="input-cell value-cell" id="doseUgCell">
+          <input type="number" id="doseUgKgMin" step="0.001" />
+        </td>
+      </tr>
 
-    <tr class="warn-row">
-      <td colspan="2" id="doseWarning"></td>
-    </tr>
+      <tr id="doseWarningRow" class="separator"><td colspan="2"></td></tr>
 
-    <!-- Разделитель -->
-    <tr class="separator"><td colspan="2"></td></tr>
+      <tr class="separator"><td colspan="2"></td></tr>
 
-    <!-- Блок: Расчёт -->
-    <tr><th colspan="2">Laskettu</th></tr>
+      <tr><th colspan="2">Laskettu</th></tr>
 
-    <tr>
-      <td class="label-cell">mg/h</td>
-      <td class="result-cell value-cell"><span id="mgH">0</span></td>
-    </tr>
+      <tr>
+        <td class="label-cell">mg/h</td>
+        <td class="result-cell value-cell"><span id="mgH">0</span></td>
+      </tr>
 
-    <tr>
-      <td class="label-cell">ml/h</td>
-      <td class="result-cell value-cell"><span id="mlH">0</span></td>
-    </tr>
+      <tr>
+        <td class="label-cell">ml/h</td>
+        <td class="result-cell value-cell"><span id="mlH">0</span></td>
+      </tr>
 
-    <tr>
-      <td class="label-cell">mg/kg/h</td>
-      <td class="result-cell value-cell"><span id="mgKgH">0</span></td>
-    </tr>
+      <tr>
+        <td class="label-cell">mg/kg/h</td>
+        <td class="result-cell value-cell"><span id="mgKgH">0</span></td>
+      </tr>
 
-    <tr>
-      <td class="label-cell">µg/kg/h</td>
-      <td class="result-cell value-cell"><span id="ugKgH">0</span></td>
-    </tr>
+      <tr>
+        <td class="label-cell">µg/kg/h</td>
+        <td class="result-cell value-cell"><span id="ugKgH">0</span></td>
+      </tr>
 
-    <tr>
-      <td class="label-cell">µg/kg/min</td>
-      <td class="result-cell value-cell"><span id="ugKgMin">0</span></td>
-    </tr>
+      <tr>
+        <td class="label-cell">µg/kg/min</td>
+        <td class="result-cell value-cell"><span id="ugKgMin">0</span></td>
+      </tr>
 
-  </table>
-</div>
+    </table>
+  </div>
 
+  <script src="app.js"></script>
 </body>
 </html>
