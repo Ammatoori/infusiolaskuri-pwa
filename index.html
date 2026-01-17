@@ -92,3 +92,65 @@
             <option value="dobutamine">Dobutamine 5 mg/ml</option>
             <option value="milrinone">Milrinone 1 mg/ml</option>
             <option value="ketamine">Ketamine 25 mg/ml</option>
+            <option value="propofol">Propofol 20 mg/ml</option>
+            <option value="remifentanyl">Remifentanyl 50 µg/ml</option>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td class="label-cell">Paino</td>
+        <td class="input-cell value-cell">
+          <input type="number" id="weight" step="0.1" />
+        </td>
+      </tr>
+      <tr>
+        <td class="label-cell">Yksikkö</td>
+        <td class="readonly-cell value-cell">kg</td>
+      </tr>
+      <tr>
+        <td class="label-cell">Vahvuus</td>
+        <td class="readonly-cell value-cell">
+          <input type="text" id="strength" readonly />
+        </td>
+      </tr>
+      <tr class="separator"><td colspan="2"></td></tr>
+      <tr>
+        <td class="label-cell">Tavoitettu annos (mg/kg/h)</td>
+        <td class="input-cell value-cell">
+          <input type="number" id="doseMgKgH" step="0.001" />
+        </td>
+      </tr>
+      <tr>
+        <td class="label-cell">Tavoitettu annos (µg/kg/min)</td>
+        <td class="input-cell value-cell">
+          <input type="number" id="doseUgKgMin" step="0.001" />
+        </td>
+      </tr>
+      <tr class="separator"><td colspan="2"></td></tr>
+      <tr><th colspan="2">Laskettu</th></tr>
+      <tr>
+        <td class="label-cell">mg/h</td>
+        <td class="result-cell value-cell"><span id="mgH">0</span></td>
+      </tr>
+      <tr>
+        <td class="label-cell">ml/h</td>
+        <td class="result-cell value-cell"><span id="mlH">0</span></td>
+      </tr>
+      <tr>
+        <td class="label-cell">mg/kg/h</td>
+        <td class="result-cell value-cell"><span id="mgKgH">0</span></td>
+      </tr>
+      <tr>
+        <td class="label-cell">µg/kg/h</td>
+        <td class="result-cell value-cell"><span id="ugKgH">0</span></td>
+      </tr>
+      <tr>
+        <td class="label-cell">µg/kg/min</td>
+        <td class="result-cell value-cell"><span id="ugKgMin">0</span></td>
+      </tr>
+    </table>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
+
