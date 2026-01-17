@@ -2,82 +2,195 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Infuusion laskuri</title>
+  <title>Infuusiolaskuri</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="manifest" href="manifest.webmanifest" />
   <meta name="theme-color" content="#1b5e20" />
   <style>
-    body { font-family: system-ui, sans-serif; margin: 0; padding: 1rem; background:#f5f5f5; }
-    .card { background:#fff; padding:1rem; margin-bottom:1rem; border-radius:8px; box-shadow:0 1px 4px rgba(0,0,0,.1); }
-    h1 { font-size:1.3rem; margin-top:0; }
-    label { display:block; margin-top:.5rem; font-size:.9rem; }
-    input, select { width:100%; padding:.4rem; margin-top:.2rem; box-sizing:border-box; }
-    .row { display:flex; gap:.5rem; }
-    .row > div { flex:1; }
-    .warn { color:#b71c1c; font-weight:600; margin-top:.5rem; }
-    .output { font-weight:600; }
+.separator td {
+  background: #e0e0e0;
+  height: 6px;
+  padding: 0;
+  border: none;
+}
+
+    body {
+      font-family: system-ui, sans-serif;
+      margin: 0;
+      padding: 0.5rem;
+      background: #f5f5f5;
+    }
+    .sheet {
+      background: #ffffff;
+      border: 1px solid #c0c0c0;
+      border-radius: 4px;
+      padding: 0.5rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,.1);
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .sheet-title {
+      font-weight: 700;
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+    }
+    table.grid {
+      border-collapse: collapse;
+      width: 100%;
+      table-layout: fixed;
+      font-size: 0.9rem;
+    }
+    table.grid th,
+    table.grid td {
+      border: 1px solid #d0d0d0;
+      padding: 0.25rem 0.35rem;
+      vertical-align: middle;
+    }
+    table.grid th {
+      background: #f0f0f0;
+      font-weight: 600;
+      text-align: center;
+    }
+    .label-cell {
+      background: #f9f9f9;
+      font-weight: 500;
+      width: 35%;
+    }
+    .input-cell,
+    .value-cell {
+      background: #ffffff;
+    }
+    .input-cell input,
+    .input-cell select {
+      width: 100%;
+      box-sizing: border-box;
+      border: none;
+      outline: none;
+      font: inherit;
+      padding: 0;
+      margin: 0;
+      background: transparent;
+    }
+    .input-cell input[type="number"]::-webkit-outer-spin-button,
+    .input-cell input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    .input-cell input[type="number"] {
+      -moz-appearance: textfield;
+    }
+    .readonly-cell {
+      background: #fdfdfd;
+      color: #000;
+    }
+    .result-cell {
+      background: #e8f5e9;
+      font-weight: 600;
+    }
+    .warn-row td {
+      background: #ffebee;
+      color: #b71c1c;
+      font-weight: 600;
+    }
+    .center {
+      text-align: center;
+    }
   </style>
 </head>
 <body>
-<h1 style="
-  text-align:center;
-  font-size:1.8rem;
-  margin:0 0 1rem 0;
-  font-weight:700;
-  color:#1b5e20;
-">
-  Infuusiolaskuri
-</h1>
-  <div class="card">
-    <h1>Infuusion laskuri</h1>
+  <div class="sheet">
+  <div class="sheet-title">Infuusiolaskuri</div>
 
-    <label>Lääke</label>
-    <select id="drug">
-      <option value="">Valitse...</option>
-      <option value="adrenalin">Adrenalin 10 µg/ml</option>
-      <option value="nor40">Noradrenalin 40 µg/ml</option>
-      <option value="nor80">Noradrenalin 80 µg/ml</option>
-      <option value="dobutamine">Dobutamine 5 mg/ml</option>
-      <option value="milrinone">Milrinone 1 mg/ml</option>
-      <option value="ketamine">Ketamine 25 mg/ml</option>
-      <option value="propofol">Propofol 20 mg/ml</option>
-      <option value="remifentanyl">Remifentanyl 50 µg/ml</option>
-    </select>
+  <table class="grid">
 
-    <div class="row">
-      <div>
-        <label>Paino (kg)</label>
+    <!-- Блок: Ввод -->
+    <tr><th colspan="2">Syöte</th></tr>
+
+    <tr>
+      <td class="label-cell">Lääke</td>
+      <td class="input-cell">
+        <select id="drug">
+          <option value="">Valitse...</option>
+          <option value="adrenalin">Adrenalin 10 µg/ml</option>
+          <option value="nor40">Noradrenalin 40 µg/ml</option>
+          <option value="nor80">Noradrenalin 80 µg/ml</option>
+          <option value="dobutamine">Dobutamine 5 mg/ml</option>
+          <option value="milrinone">Milrinone 1 mg/ml</option>
+          <option value="ketamine">Ketamine 25 mg/ml</option>
+          <option value="propofol">Propofol 20 mg/ml</option>
+          <option value="remifentanyl">Remifentanyl 50 µg/ml</option>
+        </select>
+      </td>
+    </tr>
+
+    <tr>
+      <td class="label-cell">Paino (kg)</td>
+      <td class="input-cell">
         <input type="number" id="weight" min="0" step="0.1" />
-      </div>
-      <div>
-        <label>Vahvuus</label>
+      </td>
+    </tr>
+
+    <tr>
+      <td class="label-cell">Vahvuus</td>
+      <td class="readonly-cell value-cell">
         <input type="text" id="strength" readonly />
-      </div>
-    </div>
+      </td>
+    </tr>
 
-    <div class="row">
-      <div>
-        <label>Tavoitettu annos (mg/kg/h)</label>
+    <!-- Разделитель -->
+    <tr class="separator"><td colspan="2"></td></tr>
+
+    <tr>
+      <td class="label-cell">Tavoitettu annos (mg/kg/h)</td>
+      <td class="input-cell">
         <input type="number" id="doseMgKgH" min="0" step="0.001" />
-      </div>
-      <div>
-        <label>Tavoitettu annos (µg/kg/min)</label>
+      </td>
+    </tr>
+
+    <tr>
+      <td class="label-cell">Tavoitettu annos (µg/kg/min)</td>
+      <td class="input-cell">
         <input type="number" id="doseUgKgMin" min="0" step="0.001" />
-      </div>
-    </div>
+      </td>
+    </tr>
 
-    <div class="warn" id="doseWarning"></div>
-  </div>
+    <tr class="warn-row">
+      <td colspan="2" id="doseWarning"></td>
+    </tr>
 
-  <div class="card">
-    <h2>Annokset</h2>
-    <div>mg/h: <span class="output" id="mgH">0</span></div>
-    <div>ml/h: <span class="output" id="mlH">0</span></div>
-    <div>mg/kg/h: <span class="output" id="mgKgH">0</span></div>
-    <div>µg/kg/h: <span class="output" id="ugKgH">0</span></div>
-    <div>µg/kg/min: <span class="output" id="ugKgMin">0</span></div>
-  </div>
+    <!-- Разделитель -->
+    <tr class="separator"><td colspan="2"></td></tr>
 
-  <script src="app.js"></script>
+    <!-- Блок: Расчёт -->
+    <tr><th colspan="2">Laskettu</th></tr>
+
+    <tr>
+      <td class="label-cell">mg/h</td>
+      <td class="result-cell value-cell"><span id="mgH">0</span></td>
+    </tr>
+
+    <tr>
+      <td class="label-cell">ml/h</td>
+      <td class="result-cell value-cell"><span id="mlH">0</span></td>
+    </tr>
+
+    <tr>
+      <td class="label-cell">mg/kg/h</td>
+      <td class="result-cell value-cell"><span id="mgKgH">0</span></td>
+    </tr>
+
+    <tr>
+      <td class="label-cell">µg/kg/h</td>
+      <td class="result-cell value-cell"><span id="ugKgH">0</span></td>
+    </tr>
+
+    <tr>
+      <td class="label-cell">µg/kg/min</td>
+      <td class="result-cell value-cell"><span id="ugKgMin">0</span></td>
+    </tr>
+
+  </table>
+</div>
+
 </body>
 </html>
