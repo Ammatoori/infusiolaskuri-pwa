@@ -45,6 +45,8 @@ const ugKgMinEl = document.getElementById("ugKgMin");
 const doseWarningEl = document.getElementById("doseWarning");
 const doseInfoEl = document.getElementById("doseInfo");
 
+const clearAllBtn = document.getElementById("clearAllBtn");
+
 
 // -----------------------------
 // 3. Заполнение списка препаратов
@@ -69,6 +71,10 @@ drugSelect.addEventListener("change", () => {
   doseInput.disabled = false;
   rateEl.disabled = false;
 
+  // убираем подсветку
+  rateEl.classList.remove("active-field");
+  doseInput.classList.remove("active-field");
+
   // очистка результатов
   clearOutputs();
 
@@ -88,15 +94,19 @@ drugSelect.addEventListener("change", () => {
 
 
 // -----------------------------
-// 5. Блокировка полей
+// 5. Блокировка полей + подсветка
 // -----------------------------
 rateEl.addEventListener("input", () => {
   doseInput.disabled = rateEl.value !== "";
+  rateEl.classList.toggle("active-field", rateEl.value !== "");
+  doseInput.classList.remove("active-field");
   recalc();
 });
 
 doseInput.addEventListener("input", () => {
   rateEl.disabled = doseInput.value !== "";
+  doseInput.classList.toggle("active-field", doseInput.value !== "");
+  rateEl.classList.remove("active-field");
   recalc();
 });
 
@@ -104,7 +114,31 @@ weightEl.addEventListener("input", recalc);
 
 
 // -----------------------------
-// 6. Расчёт
+// 6. Кнопка Tyhjennä kaikki
+// -----------------------------
+clearAllBtn.addEventListener("click", () => {
+  rateEl.value = "";
+  doseInput.value = "";
+  weightEl.value = "";
+
+  rateEl.disabled = false;
+  doseInput.disabled = false;
+
+  rateEl.classList.remove("active-field");
+  doseInput.classList.remove("active-field");
+
+  clearOutputs();
+
+  concDisplay.textContent = "";
+  doseInfoEl.textContent = "";
+  doseWarningEl.textContent = "";
+
+  drugSelect.value = "";
+});
+
+
+// -----------------------------
+// 7. Расчёт
 // -----------------------------
 function clearOutputs() {
   mgHEl.textContent = "";
@@ -138,9 +172,7 @@ function recalc() {
 
   let mgPerH = 0, mlPerH = 0, mgPerKgH = 0, ugPerKgH = 0, ugPerKgMin = 0;
 
-  // -----------------------------
   // 1) Расчёт по скорости (ml/h)
-  // -----------------------------
   if (rate) {
     mlPerH = rate;
 
@@ -157,22 +189,19 @@ function recalc() {
       mgPerH = mgPerKgH * w;
     }
 
-    // Показываем дозы
+    // Пользователь ввёл скорость → показываем только дозы
     mgHEl.textContent = mgPerH.toFixed(3);
     mgKgHEl.textContent = mgPerKgH.toFixed(3);
     ugKgHEl.textContent = ugPerKgH.toFixed(3);
     ugKgMinEl.textContent = ugPerKgMin.toFixed(3);
 
-    // Скорость НЕ выводим
-    mlHEl.textContent = "";
+    mlHEl.textContent = ""; // скорость не дублируем
 
     applyWarning(d, mgPerKgH, ugPerKgMin);
     return;
   }
 
-  // -----------------------------
   // 2) Расчёт по дозе
-  // -----------------------------
   if (dose && d.unit === "mg") {
     mgPerKgH = dose;
     mgPerH = mgPerKgH * w;
@@ -189,16 +218,12 @@ function recalc() {
     mlPerH = (ugPerKgH * w) / d.conc;
   }
 
-  // Показываем дозы
+  // Пользователь ввёл дозу → показываем дозы + скорость
   mgHEl.textContent = mgPerH.toFixed(3);
   mgKgHEl.textContent = mgPerKgH.toFixed(3);
   ugKgHEl.textContent = ugPerKgH.toFixed(3);
   ugKgMinEl.textContent = ugPerKgMin.toFixed(3);
-
-  // Показываем скорость
   mlHEl.textContent = mlPerH.toFixed(3);
 
   applyWarning(d, mgPerKgH, ugPerKgMin);
 }
-
-
