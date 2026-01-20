@@ -23,7 +23,29 @@
       font: inherit; padding: 0; outline: none;
     }
 
+    /* чуть шире поле Lääke */
+    #drug {
+      width: 100%;
+      padding-right: 10px;
+    }
+
     .warning { background: #ffcccc; color: #900; font-weight: 700; }
+
+    .active-field {
+      background: #fff3cd !important;
+      transition: background 0.2s;
+    }
+
+    #clearAllBtn {
+      display: block;
+      margin: 20px auto 0;
+      padding: 10px 20px;
+      font-size: 16px;
+      background: #e6f3ff;
+      border: 1px solid #90c2ff;
+      border-radius: 6px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -65,7 +87,7 @@
   <!-- 3: Nopeus + Tavoitettu annos -->
   <tr class="pink">
     <td class="bold">Nopeus</td>
-    <td class="gray"><input id="rate" type="number" step="0.1"></td>
+    <td class="gray"><input id="rate" type="number" step="0.01"></td>
     <td class="gray">ml/h</td>
 
     <td class="bold center">Tavoitettu annos</td>
@@ -102,8 +124,8 @@
 
 </table>
 
+<button id="clearAllBtn">Tyhjennä kaikki</button>
+
 <script src="app.js"></script>
 </body>
 </html>
-
-
