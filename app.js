@@ -7,14 +7,8 @@ const concDisplay = document.getElementById("concDisplay");
 const weightEl = document.getElementById("weight");
 const rateEl = document.getElementById("rate");
 
-const doseMgCell = document.getElementById("doseMgCell");
-const doseUgCell = document.getElementById("doseUgCell");
-
-const doseMgUnit = document.getElementById("doseMgUnit");
-const doseUgUnit = document.getElementById("doseUgUnit");
-
-const doseMgEl = document.getElementById("doseMg");
-const doseUgEl = document.getElementById("doseUg");
+const doseInput = document.getElementById("doseInput");
+const doseUnitCell = document.getElementById("doseUnitCell");
 
 const mgHEl = document.getElementById("mgH");
 const mlHEl = document.getElementById("mlH");
@@ -45,12 +39,9 @@ const drugs = {
 // 3. Выбор препарата
 // -----------------------------
 drugSelect.addEventListener("change", () => {
-  const key = drugSelect.value;
-  const d = drugs[key];
+  const d = drugs[drugSelect.value];
 
-  // очистка
-  doseMgEl.value = "";
-  doseUgEl.value = "";
+  doseInput.value = "";
   rateEl.value = "";
   doseWarningEl.textContent = "";
   concDisplay.textContent = "";
@@ -58,28 +49,14 @@ drugSelect.addEventListener("change", () => {
 
   if (!d) return;
 
-  // концентрация
   concDisplay.textContent = d.concMgPerMl
     ? `${d.concMgPerMl} mg/ml`
     : `${d.concUgPerMl} µg/ml`;
 
-  // рекомендации
   doseInfoEl.textContent = d.info;
 
-  // автоматический выбор единицы дозы
-  if (d.unit === "mg") {
-    doseMgCell.style.display = "table-cell";
-    doseMgUnit.style.display = "table-cell";
-
-    doseUgCell.style.display = "none";
-    doseUgUnit.style.display = "none";
-  } else {
-    doseMgCell.style.display = "none";
-    doseMgUnit.style.display = "none";
-
-    doseUgCell.style.display = "table-cell";
-    doseUgUnit.style.display = "table-cell";
-  }
+  // автоматическое переключение единицы
+  doseUnitCell.textContent = d.unit === "mg" ? "mg/kg/h" : "µg/kg/min";
 });
 
 
@@ -87,35 +64,12 @@ drugSelect.addEventListener("change", () => {
 // 4. Блокировка полей
 // -----------------------------
 rateEl.addEventListener("input", () => {
-  if (rateEl.value !== "") {
-    doseMgEl.disabled = true;
-    doseUgEl.disabled = true;
-  } else {
-    doseMgEl.disabled = false;
-    doseUgEl.disabled = false;
-  }
+  doseInput.disabled = rateEl.value !== "";
   recalc();
 });
 
-doseMgEl.addEventListener("input", () => {
-  if (doseMgEl.value !== "") {
-    rateEl.disabled = true;
-    doseUgEl.disabled = true;
-  } else {
-    rateEl.disabled = false;
-    doseUgEl.disabled = false;
-  }
-  recalc();
-});
-
-doseUgEl.addEventListener("input", () => {
-  if (doseUgEl.value !== "") {
-    rateEl.disabled = true;
-    doseMgEl.disabled = true;
-  } else {
-    rateEl.disabled = false;
-    doseMgEl.disabled = false;
-  }
+doseInput.addEventListener("input", () => {
+  rateEl.disabled = doseInput.value !== "";
   recalc();
 });
 
@@ -144,18 +98,16 @@ function applyWarning(drug, mgPerKgH, ugPerKgMin) {
 function recalc() {
   clearOutputs();
 
-  const key = drugSelect.value;
-  const d = drugs[key];
+  const d = drugs[drugSelect.value];
   if (!d) return;
 
   const w = parseFloat(weightEl.value);
   if (!w || w <= 0) return;
 
   const rate = rateEl.value ? parseFloat(rateEl.value) : null;
-  const doseMg = doseMgEl.value ? parseFloat(doseMgEl.value) : null;
-  const doseUg = doseUgEl.value ? parseFloat(doseUgEl.value) : null;
+  const dose = doseInput.value ? parseFloat(doseInput.value) : null;
 
-  if (!rate && !doseMg && !doseUg) return;
+  if (!rate && !dose) return;
 
   let mgPerH = 0, mlPerH = 0, mgPerKgH = 0, ugPerKgH = 0, ugPerKgMin = 0;
 
@@ -163,7 +115,7 @@ function recalc() {
   if (rate) {
     mlPerH = rate;
 
-    if (d.concMgPerMl) {
+    if (d.unit === "mg") {
       mgPerH = mlPerH * d.concMgPerMl;
       mgPerKgH = mgPerH / w;
       ugPerKgH = mgPerKgH * 1000;
@@ -177,26 +129,22 @@ function recalc() {
     }
   }
 
-  // 2) mg/kg/h
-  if (!rate && doseMg && d.unit === "mg") {
-    mgPerKgH = doseMg;
+  // 2) доза mg/kg/h
+  if (!rate && dose && d.unit === "mg") {
+    mgPerKgH = dose;
     mgPerH = mgPerKgH * w;
     ugPerKgH = mgPerKgH * 1000;
     ugPerKgMin = ugPerKgH / 60;
-
-    if (d.concMgPerMl) mlPerH = mgPerH / d.concMgPerMl;
-    else mlPerH = (mgPerH * 1000) / d.concUgPerMl;
+    mlPerH = mgPerH / d.concMgPerMl;
   }
 
-  // 3) µg/kg/min
-  if (!rate && doseUg && d.unit === "ug") {
-    ugPerKgMin = doseUg;
+  // 3) доза µg/kg/min
+  if (!rate && dose && d.unit === "ug") {
+    ugPerKgMin = dose;
     ugPerKgH = ugPerKgMin * 60;
     mgPerKgH = ugPerKgH / 1000;
     mgPerH = mgPerKgH * w;
-
-    if (d.concUgPerMl) mlPerH = (ugPerKgH * w) / d.concUgPerMl;
-    else mlPerH = mgPerH / d.concMgPerMl;
+    mlPerH = (ugPerKgH * w) / d.concUgPerMl;
   }
 
   mgHEl.textContent = mgPerH.toFixed(3);
