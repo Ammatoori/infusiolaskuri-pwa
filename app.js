@@ -137,7 +137,9 @@ function recalc() {
 
   let mgPerH = 0, mlPerH = 0, mgPerKgH = 0, ugPerKgH = 0, ugPerKgMin = 0;
 
-  // 1) скорость
+  // -----------------------------
+  // 1) Расчёт по скорости (ml/h)
+  // -----------------------------
   if (rate) {
     mlPerH = rate;
 
@@ -153,10 +155,24 @@ function recalc() {
       mgPerKgH = ugPerKgH / 1000;
       mgPerH = mgPerKgH * w;
     }
+
+    // Показываем ТОЛЬКО ml/h
+    mlHEl.textContent = mlPerH.toFixed(3);
+
+    // Остальное скрываем
+    mgHEl.textContent = "";
+    mgKgHEl.textContent = "";
+    ugKgHEl.textContent = "";
+    ugKgMinEl.textContent = "";
+
+    applyWarning(d, mgPerKgH, ugPerKgMin);
+    return;
   }
 
-  // 2) доза mg/kg/h
-  if (!rate && dose && d.unit === "mg") {
+  // -----------------------------
+  // 2) Расчёт по дозе
+  // -----------------------------
+  if (dose && d.unit === "mg") {
     mgPerKgH = dose;
     mgPerH = mgPerKgH * w;
     ugPerKgH = mgPerKgH * 1000;
@@ -164,8 +180,7 @@ function recalc() {
     mlPerH = mgPerH / d.conc;
   }
 
-  // 3) доза µg/kg/min
-  if (!rate && dose && d.unit === "ug") {
+  if (dose && d.unit === "ug") {
     ugPerKgMin = dose;
     ugPerKgH = ugPerKgMin * 60;
     mgPerKgH = ugPerKgH / 1000;
@@ -173,12 +188,17 @@ function recalc() {
     mlPerH = (ugPerKgH * w) / d.conc;
   }
 
+  // Показываем ТОЛЬКО дозы
   mgHEl.textContent = mgPerH.toFixed(3);
-  mlHEl.textContent = mlPerH.toFixed(3);
   mgKgHEl.textContent = mgPerKgH.toFixed(3);
   ugKgHEl.textContent = ugPerKgH.toFixed(3);
   ugKgMinEl.textContent = ugPerKgMin.toFixed(3);
 
+  // ml/h скрываем
+  mlHEl.textContent = "";
+
   applyWarning(d, mgPerKgH, ugPerKgMin);
 }
+
+
 
