@@ -59,22 +59,18 @@
   </tr>
 
   <!-- 5: Nopeus + Tavoitettu annos -->
-  <tr>
+<tr>
   <td class="pink bold">Nopeus</td>
   <td class="pink"><input id="rate" type="number" step="0.01"></td>
   <td class="gray">ml/h</td>
 
   <td class="bold center">Tavoitettu annos</td>
 
-  <!-- mg/kg/h -->
-  <td class="pink" id="doseMgCell">
-    <input id="doseMg" type="number" step="0.001">
+  <!-- Единое поле дозы -->
+  <td class="pink">
+    <input id="doseInput" type="number" step="0.001">
   </td>
-  <td class="gray" id="doseMgUnit">mg/kg/h</td>
 
-  <!-- µg/kg/min -->
-  <td class="pink" id="doseUgCell" style="display:none;">
-    <input id="doseUg" type="number" step="0.001">
-  </td>
-  <td class="gray" id="doseUgUnit" style="display:none;">µg/kg/min</td>
+  <!-- Единица дозы -->
+  <td class="gray" id="doseUnitCell">mg/kg/h</td>
 </tr>
