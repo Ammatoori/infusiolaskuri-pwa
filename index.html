@@ -59,18 +59,58 @@
   </tr>
 
   <!-- 5: Nopeus + Tavoitettu annos -->
-<tr>
-  <td class="pink bold">Nopeus</td>
-  <td class="pink"><input id="rate" type="number" step="0.01"></td>
-  <td class="gray">ml/h</td>
+  <tr>
+    <td class="pink bold">Nopeus</td>
+    <td class="pink"><input id="rate" type="number" step="0.01"></td>
+    <td class="gray">ml/h</td>
 
-  <td class="bold center">Tavoitettu annos</td>
+    <td class="bold center">Tavoitettu annos</td>
 
-  <!-- Единое поле дозы -->
-  <td class="pink">
-    <input id="doseInput" type="number" step="0.001">
-  </td>
+    <!-- единое поле дозы -->
+    <td class="pink">
+      <input id="doseInput" type="number" step="0.001">
+    </td>
 
-  <!-- Единица дозы -->
-  <td class="gray" id="doseUnitCell">mg/kg/h</td>
-</tr>
+    <!-- единица дозы -->
+    <td class="gray" id="doseUnitCell">mg/kg/h</td>
+  </tr>
+
+  <!-- 6 -->
+  <tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+
+  <!-- 7: предупреждение -->
+  <tr><td class="warning" id="doseWarning" colspan="6"></td></tr>
+
+  <!-- 8 -->
+  <tr>
+    <td class="bold">Annokset</td><td></td><td></td>
+    <td class="bold">Nopeus</td><td></td><td></td>
+  </tr>
+
+  <!-- 9 -->
+  <tr>
+    <td class="blue bold">mg/h</td><td class="blue"><span id="mgH"></span></td><td></td>
+    <td class="blue bold">ml/h</td><td class="blue"><span id="mlH"></span></td><td></td>
+  </tr>
+
+  <!-- 10 -->
+  <tr><td class="blue bold">mg/kg/h</td><td class="blue"><span id="mgKgH"></span></td><td></td><td></td><td></td><td></td></tr>
+
+  <!-- 11 -->
+  <tr><td class="blue bold">µg/kg/h</td><td class="blue"><span id="ugKgH"></span></td><td></td><td></td><td></td><td></td></tr>
+
+  <!-- 12 -->
+  <tr><td class="blue bold">µg/kg/min</td><td class="blue"><span id="ugKgMin"></span></td><td></td><td></td><td></td><td></td></tr>
+
+  <!-- 13–14 -->
+  <tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+  <tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+
+  <!-- 15 -->
+  <tr><td class="gray bold" colspan="6" id="doseInfo"></td></tr>
+
+</table>
+
+<script src="app.js"></script>
+</body>
+</html>
