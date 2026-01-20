@@ -10,6 +10,54 @@ const drugs = {
   remifentanyl: { concUgPerMl: 50, maxUgKgMin: 0.3 }
 };
 
+const drugSelect = document.getElementById("drug");
+const doseMgField = document.getElementById("doseMg");     // mg/kg/h
+const doseUgField = document.getElementById("doseUg");     // µg/kg/min
+const concDisplay = document.getElementById("concDisplay"); // C2
+const doseWarning = document.getElementById("doseWarning");
+const doseInfo = document.getElementById("doseInfo");
+
+// Справочник концентраций и рекомендаций
+const drugData = {
+  adrenalin:      { conc: "10 µg/ml",  unit: "µg/kg/min", info: "Aloitus 0,01–0,05 µg/kg/min..." },
+  nor40:          { conc: "40 µg/ml",  unit: "µg/kg/min", info: "Aloitus 0,01–0,05 µg/kg/min..." },
+  nor80:          { conc: "80 µg/ml",  unit: "µg/kg/min", info: "Aloitus 0,01–0,05 µg/kg/min..." },
+  dobutamine:     { conc: "5 mg/ml",   unit: "mg/kg/h",   info: "Tavallinen annos 2–20 mg/kg/h" },
+  milrinone:      { conc: "1 mg/ml",   unit: "mg/kg/h",   info: "Aloitus 0,25–0,75 mg/kg/h" },
+  ketamine:       { conc: "25 mg/ml",  unit: "mg/kg/h",   info: "Ylläpito 0,5–2 mg/kg/h" },
+  propofol:       { conc: "20 mg/ml",  unit: "mg/kg/h",   info: "Ylläpito 1–4 mg/kg/h" },
+  remifentanyl:   { conc: "50 µg/ml",  unit: "µg/kg/min", info: "Aloitus 0,05–0,2 µg/kg/min" }
+};
+
+// Автоматическое переключение дозы
+drugSelect.addEventListener("change", () => {
+  const key = drugSelect.value;
+  if (!key) return;
+
+  const d = drugData[key];
+
+  // Показать концентрацию в C2
+  concDisplay.textContent = d.conc;
+
+  // Автоматически выбрать нужную единицу
+  if (d.unit === "mg/kg/h") {
+    doseMgField.parentElement.style.display = "table-cell";
+    doseUgField.parentElement.style.display = "none";
+    doseUgField.value = "";
+  } else {
+    doseMgField.parentElement.style.display = "none";
+    doseUgField.parentElement.style.display = "table-cell";
+    doseMgField.value = "";
+  }
+
+  // Показать рекомендации в B15
+  doseInfo.textContent = d.info;
+
+  // Очистить предупреждение
+  doseWarning.textContent = "";
+});
+
+
 // Удобный доступ к элементам
 const el = id => document.getElementById(id);
 
@@ -173,3 +221,4 @@ doseUgEl.addEventListener("input", recalc);
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("sw.js");
 }
+
