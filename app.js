@@ -58,6 +58,13 @@ Object.keys(drugs).forEach(name => {
   drugSelect.appendChild(opt);
 });
 
+// Добавляем пустой вариант в начало
+const emptyOpt = document.createElement("option");
+emptyOpt.value = "";
+emptyOpt.textContent = "";
+drugSelect.prepend(emptyOpt);
+drugSelect.value = "";
+
 
 // -----------------------------
 // 4. Выбор препарата
@@ -65,30 +72,25 @@ Object.keys(drugs).forEach(name => {
 drugSelect.addEventListener("change", () => {
   const d = drugs[drugSelect.value];
 
-  // очистка полей (кроме веса)
   doseInput.value = "";
   rateEl.value = "";
   doseInput.disabled = false;
   rateEl.disabled = false;
 
-  // убираем подсветку
   rateEl.classList.remove("active-field");
   doseInput.classList.remove("active-field");
 
-  // очистка результатов
   clearOutputs();
 
   doseWarningEl.textContent = "";
   concDisplay.textContent = "";
   doseInfoEl.textContent = "";
+  doseUnitCell.textContent = "";
 
   if (!d) return;
 
-  // обновление концентрации и рекомендаций
   concDisplay.textContent = `${d.conc} ${d.unit === "mg" ? "mg/ml" : "µg/ml"}`;
   doseInfoEl.textContent = d.info;
-
-  // правильная единица дозы
   doseUnitCell.textContent = d.unit === "mg" ? "mg/kg/h" : "µg/kg/min";
 });
 
@@ -134,6 +136,7 @@ clearAllBtn.addEventListener("click", () => {
   doseWarningEl.textContent = "";
 
   drugSelect.value = "";
+  doseUnitCell.textContent = "";
 });
 
 
@@ -172,7 +175,7 @@ function recalc() {
 
   let mgPerH = 0, mlPerH = 0, mgPerKgH = 0, ugPerKgH = 0, ugPerKgMin = 0;
 
-  // 1) Расчёт по скорости (ml/h)
+  // 1) Расчёт по скорости
   if (rate) {
     mlPerH = rate;
 
@@ -189,13 +192,12 @@ function recalc() {
       mgPerH = mgPerKgH * w;
     }
 
-    // Пользователь ввёл скорость → показываем только дозы
     mgHEl.textContent = mgPerH.toFixed(3);
     mgKgHEl.textContent = mgPerKgH.toFixed(3);
     ugKgHEl.textContent = ugPerKgH.toFixed(3);
     ugKgMinEl.textContent = ugPerKgMin.toFixed(3);
 
-    mlHEl.textContent = ""; // скорость не дублируем
+    mlHEl.textContent = "";
 
     applyWarning(d, mgPerKgH, ugPerKgMin);
     return;
@@ -218,7 +220,6 @@ function recalc() {
     mlPerH = (ugPerKgH * w) / d.conc;
   }
 
-  // Пользователь ввёл дозу → показываем дозы + скорость
   mgHEl.textContent = mgPerH.toFixed(3);
   mgKgHEl.textContent = mgPerKgH.toFixed(3);
   ugKgHEl.textContent = ugPerKgH.toFixed(3);
@@ -227,3 +228,4 @@ function recalc() {
 
   applyWarning(d, mgPerKgH, ugPerKgMin);
 }
+
