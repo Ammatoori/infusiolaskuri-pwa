@@ -1,72 +1,65 @@
 <!DOCTYPE html>
 <html lang="fi">
 <head>
-<meta charset="UTF-8" />
-<title>Infuusiolaskuri</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-<style>
-  body {
-    font-family: system-ui, sans-serif;
-    background: #f5f5f5;
-    padding: 10px;
-  }
-
-  table {
-    border-collapse: collapse;
-    width: 100%;
-    max-width: 900px;
-    margin: auto;
-    table-layout: fixed;
-  }
-
-  td {
-    border: 1px solid #c0c0c0;
-    padding: 4px;
-    font-size: 14px;
-  }
-
-  .pink { background: #ffe6f2; }     /* ввод */
-  .blue { background: #e6f3ff; }     /* расчёт */
-  .gray { background: #f2f2f2; }     /* read-only */
-  .bold { font-weight: 700; }
-  .center { text-align: center; }
-
-  input, select {
-    width: 100%;
-    border: none;
-    background: transparent;
-    font: inherit;
-    padding: 0;
-    outline: none;
-  }
-
-  .warning {
-    background: #ffcccc;
-    color: #900;
-    font-weight: 700;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <title>Infuusiolaskuri</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      background: #f5f5f5;
+      padding: 10px;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      max-width: 900px;
+      margin: auto;
+      table-layout: fixed;
+    }
+    td {
+      border: 1px solid #c0c0c0;
+      padding: 4px;
+      font-size: 14px;
+    }
+    .pink { background: #ffe6f2; }     /* ввод */
+    .blue { background: #e6f3ff; }     /* расчёт */
+    .gray { background: #f2f2f2; }     /* read-only / единицы */
+    .bold { font-weight: 700; }
+    .center { text-align: center; }
+    input, select {
+      width: 100%;
+      border: none;
+      background: transparent;
+      font: inherit;
+      padding: 0;
+      outline: none;
+    }
+    .warning {
+      background: #ffcccc;
+      color: #900;
+      font-weight: 700;
+    }
+  </style>
 </head>
-
 <body>
 
 <table>
 
-  <!-- ROW 1 (пустая, как в Excel) -->
+  <!-- 1 -->
   <tr>
     <td></td><td></td><td></td><td></td><td></td><td></td>
   </tr>
 
-  <!-- ROW 2: C2 = концентрация -->
+  <!-- 2: C2 концентрация -->
   <tr>
     <td></td>
     <td></td>
-    <td class="gray" id="concCell"><span id="drugConc"></span></td>
+    <td class="gray" id="concDisplay"></td>
     <td></td><td></td><td></td>
   </tr>
 
-  <!-- ROW 3: B3 Lääke -->
+  <!-- 3: Lääke -->
   <tr>
     <td class="pink bold">Lääke</td>
     <td class="pink">
@@ -82,11 +75,11 @@
         <option value="remifentanyl">Remifentanyl 50 µg/ml</option>
       </select>
     </td>
-    <td class="gray" id="concDisplay"></td>
+    <td class="gray"></td>
     <td></td><td></td><td></td>
   </tr>
 
-  <!-- ROW 4: Paino -->
+  <!-- 4: Paino -->
   <tr>
     <td class="pink bold">Paino</td>
     <td class="pink"><input id="weight" type="number" step="0.1"></td>
@@ -94,76 +87,25 @@
     <td></td><td></td><td></td>
   </tr>
 
-  <!-- ROW 5: Nopeus -->
+  <!-- 5: Nopeus + Tavoitettu annos -->
   <tr>
     <td class="pink bold">Nopeus</td>
     <td class="pink"><input id="rate" type="number" step="0.01"></td>
-    <td class="gray">ml/t</td>
+    <td class="gray">ml/h</td>
+
     <td class="bold center">Tavoitettu annos</td>
-    <td class="pink"><input id="doseMg" type="number" step="0.001"></td>
-    <td class="pink"><input id="doseUg" type="number" step="0.001"></td>
+
+    <!-- mg/kg/h (для mg/ml) -->
+    <td class="pink" id="doseMgCell">
+      <input id="doseMg" type="number" step="0.001">
+    </td>
+
+    <!-- µg/kg/min (для µg/ml) -->
+    <td class="pink" id="doseUgCell">
+      <input id="doseUg" type="number" step="0.001">
+    </td>
   </tr>
 
-  <!-- ROW 6 (пустая) -->
+  <!-- 6: пустая -->
   <tr>
     <td></td><td></td><td></td><td></td><td></td><td></td>
-  </tr>
-
-  <!-- ROW 7: предупреждение -->
-  <tr>
-    <td class="warning" id="doseWarning" colspan="6"></td>
-  </tr>
-
-  <!-- ROW 8: заголовок Annokset -->
-  <tr>
-    <td class="bold">Annokset</td>
-    <td></td><td></td>
-    <td class="bold">Nopeus</td>
-    <td></td><td></td>
-  </tr>
-
-  <!-- ROW 9: mg/h -->
-  <tr>
-    <td class="blue bold">mg/h</td>
-    <td class="blue"><span id="mgH"></span></td>
-    <td></td>
-    <td class="blue bold">ml/t</td>
-    <td class="blue"><span id="mlH"></span></td>
-    <td></td>
-  </tr>
-
-  <!-- ROW 10: mg/kg/h -->
-  <tr>
-    <td class="blue bold">mg/kg/h</td>
-    <td class="blue"><span id="mgKgH"></span></td>
-    <td></td><td></td><td></td><td></td>
-  </tr>
-
-  <!-- ROW 11: µg/kg/h -->
-  <tr>
-    <td class="blue bold">µg/kg/h</td>
-    <td class="blue"><span id="ugKgH"></span></td>
-    <td></td><td></td><td></td><td></td>
-  </tr>
-
-  <!-- ROW 12: µg/kg/min -->
-  <tr>
-    <td class="blue bold">µg/kg/min</td>
-    <td class="blue"><span id="ugKgMin"></span></td>
-    <td></td><td></td><td></td><td></td>
-  </tr>
-
-  <!-- ROW 13–14 пустые -->
-  <tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-  <tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-
-  <!-- ROW 15: рекомендации -->
-  <tr>
-    <td class="gray bold" colspan="6" id="doseInfo"></td>
-  </tr>
-
-</table>
-
-<script src="app.js"></script>
-</body>
-</html>
