@@ -5,108 +5,99 @@
   <title>Infuusiolaskuri</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
-    body { font-family: system-ui, sans-serif; background: #f5f5f5; padding: 10px; }
+    body { font-family: system-ui, sans-serif; background: #f5f5f5; padding: 20px; }
+    h1 { text-align: center; font-size: 28px; margin-bottom: 20px; }
+
     table { border-collapse: collapse; width: 100%; max-width: 900px; margin: auto; table-layout: fixed; }
-    td { border: 1px solid #c0c0c0; padding: 4px; font-size: 14px; }
+    td { border: 1px solid #c0c0c0; padding: 6px; font-size: 15px; }
+
     .pink { background: #ffe6f2; }
-    .blue { background: #e6f3ff; }
     .gray { background: #f2f2f2; }
+    .blue { background: #e6f3ff; }
+
     .bold { font-weight: 700; }
     .center { text-align: center; }
-    input, select { width: 100%; border: none; background: transparent; font: inherit; padding: 0; outline: none; }
+
+    input, select {
+      width: 100%; border: none; background: transparent;
+      font: inherit; padding: 0; outline: none;
+    }
+
     .warning { background: #ffcccc; color: #900; font-weight: 700; }
   </style>
 </head>
 <body>
 
+<h1>Infuusiolaskuri</h1>
+
+<!-- Скрытая таблица laakelista -->
+<table id="laakelista" style="display:none;">
+  <tr><td>Adrenalin</td><td>10</td><td>µg/ml</td><td>Aloitus 0,01–0,05 µg/kg/min. Ylläpito 0,1–0,5 µg/kg/min. Iskemia-riski >1,0 µg/kg/min</td></tr>
+  <tr><td>Noradrenalin 40</td><td>40</td><td>µg/ml</td><td>Aloitus 0,01–0,05 µg/kg/min. Ylläpito 0,1–0,5 µg/kg/min. Iskemia-riski >1,0 µg/kg/min</td></tr>
+  <tr><td>Noradrenalin 80</td><td>80</td><td>µg/ml</td><td>Aloitus 0,01–0,05 µg/kg/min. Ylläpito 0,1–0,5 µg/kg/min. Iskemia-riski >1,0 µg/kg/min</td></tr>
+  <tr><td>Dobutamine</td><td>5000</td><td>µg/ml</td><td>2–20 µg/kg/min</td></tr>
+  <tr><td>Milrinone</td><td>1000</td><td>µg/ml</td><td>0,25–0,75 µg/kg/min</td></tr>
+  <tr><td>Ketamine</td><td>25</td><td>mg/ml</td><td>0,5–2 mg/kg/h</td></tr>
+  <tr><td>Propofol</td><td>20</td><td>mg/ml</td><td>1–4 mg/kg/h</td></tr>
+  <tr><td>Remifentanyl</td><td>50</td><td>µg/ml</td><td>0,05–0,2 µg/kg/min</td></tr>
+</table>
+
 <table>
 
-  <!-- 1 -->
-  <tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-
-  <!-- 2: C2 концентрация -->
-  <tr>
-    <td></td><td></td>
+  <!-- 1: Lääke -->
+  <tr class="pink">
+    <td class="bold">Lääke</td>
+    <td class="gray">
+      <select id="drug"></select>
+    </td>
     <td class="gray" id="concDisplay"></td>
     <td></td><td></td><td></td>
   </tr>
 
-  <!-- 3: Lääke -->
-  <tr>
-    <td class="pink bold">Lääke</td>
-    <td class="pink">
-      <select id="drug">
-        <option value="">Valitse...</option>
-        <option value="adrenalin">Adrenalin 10 µg/ml</option>
-        <option value="nor40">Noradrenalin 40 µg/ml</option>
-        <option value="nor80">Noradrenalin 80 µg/ml</option>
-        <option value="dobutamine">Dobutamine 5 mg/ml</option>
-        <option value="milrinone">Milrinone 1 mg/ml</option>
-        <option value="ketamine">Ketamine 25 mg/ml</option>
-        <option value="propofol">Propofol 20 mg/ml</option>
-        <option value="remifentanyl">Remifentanyl 50 µg/ml</option>
-      </select>
-    </td>
-    <td class="gray"></td><td></td><td></td><td></td>
-  </tr>
-
-  <!-- 4: Paino -->
-  <tr>
-    <td class="pink bold">Paino</td>
-    <td class="pink"><input id="weight" type="number" step="0.1"></td>
+  <!-- 2: Paino -->
+  <tr class="pink">
+    <td class="bold">Paino</td>
+    <td class="gray"><input id="weight" type="number" step="0.1"></td>
     <td class="gray">kg</td>
     <td></td><td></td><td></td>
   </tr>
 
-  <!-- 5: Nopeus + Tavoitettu annos -->
-  <tr>
-    <td class="pink bold">Nopeus</td>
-    <td class="pink"><input id="rate" type="number" step="0.01"></td>
+  <!-- 3: Nopeus + Tavoitettu annos -->
+  <tr class="pink">
+    <td class="bold">Nopeus</td>
+    <td class="gray"><input id="rate" type="number" step="0.01"></td>
     <td class="gray">ml/h</td>
 
     <td class="bold center">Tavoitettu annos</td>
-
-    <!-- единое поле дозы -->
-    <td class="pink">
-      <input id="doseInput" type="number" step="0.001">
-    </td>
-
-    <!-- единица дозы -->
+    <td class="gray"><input id="doseInput" type="number" step="0.001"></td>
     <td class="gray" id="doseUnitCell">mg/kg/h</td>
   </tr>
 
-  <!-- 6 -->
-  <tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-
-  <!-- 7: предупреждение -->
+  <!-- 4: предупреждение -->
   <tr><td class="warning" id="doseWarning" colspan="6"></td></tr>
 
-  <!-- 8 -->
-  <tr>
+  <!-- 5: заголовки результатов -->
+  <tr class="blue">
     <td class="bold">Annokset</td><td></td><td></td>
     <td class="bold">Nopeus</td><td></td><td></td>
   </tr>
 
-  <!-- 9 -->
-  <tr>
-    <td class="blue bold">mg/h</td><td class="blue"><span id="mgH"></span></td><td></td>
-    <td class="blue bold">ml/h</td><td class="blue"><span id="mlH"></span></td><td></td>
+  <!-- 6: mg/h + ml/h -->
+  <tr class="blue">
+    <td class="bold">mg/h</td><td><span id="mgH"></span></td><td></td>
+    <td class="bold">ml/h</td><td><span id="mlH"></span></td><td></td>
   </tr>
 
-  <!-- 10 -->
-  <tr><td class="blue bold">mg/kg/h</td><td class="blue"><span id="mgKgH"></span></td><td></td><td></td><td></td><td></td></tr>
+  <!-- 7 -->
+  <tr class="blue"><td class="bold">mg/kg/h</td><td><span id="mgKgH"></span></td><td></td><td></td><td></td><td></td></tr>
 
-  <!-- 11 -->
-  <tr><td class="blue bold">µg/kg/h</td><td class="blue"><span id="ugKgH"></span></td><td></td><td></td><td></td><td></td></tr>
+  <!-- 8 -->
+  <tr class="blue"><td class="bold">µg/kg/h</td><td><span id="ugKgH"></span></td><td></td><td></td><td></td><td></td></tr>
 
-  <!-- 12 -->
-  <tr><td class="blue bold">µg/kg/min</td><td class="blue"><span id="ugKgMin"></span></td><td></td><td></td><td></td><td></td></tr>
+  <!-- 9 -->
+  <tr class="blue"><td class="bold">µg/kg/min</td><td><span id="ugKgMin"></span></td><td></td><td></td><td></td><td></td></tr>
 
-  <!-- 13–14 -->
-  <tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-  <tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-
-  <!-- 15 -->
+  <!-- 10: рекомендации -->
   <tr><td class="gray bold" colspan="6" id="doseInfo"></td></tr>
 
 </table>
