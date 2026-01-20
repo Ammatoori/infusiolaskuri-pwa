@@ -9,7 +9,7 @@ function loadLaakelista() {
     const c = r.querySelectorAll("td");
     const name = c[0].textContent.trim();
     const conc = parseFloat(c[1].textContent.trim());
-    const unit = c[2].textContent.trim(); // mg/ml или µg/ml
+    const unit = c[2].textContent.trim();
     const info = c[3].textContent.trim();
 
     data[name] = {
@@ -86,6 +86,7 @@ drugSelect.addEventListener("change", () => {
   doseUnitCell.textContent = d.unit === "mg" ? "mg/kg/h" : "µg/kg/min";
 });
 
+
 // -----------------------------
 // 5. Блокировка полей
 // -----------------------------
@@ -156,14 +157,14 @@ function recalc() {
       mgPerH = mgPerKgH * w;
     }
 
-    // Показываем ТОЛЬКО ml/h
-    mlHEl.textContent = mlPerH.toFixed(3);
+    // Показываем дозы
+    mgHEl.textContent = mgPerH.toFixed(3);
+    mgKgHEl.textContent = mgPerKgH.toFixed(3);
+    ugKgHEl.textContent = ugPerKgH.toFixed(3);
+    ugKgMinEl.textContent = ugPerKgMin.toFixed(3);
 
-    // Остальное скрываем
-    mgHEl.textContent = "";
-    mgKgHEl.textContent = "";
-    ugKgHEl.textContent = "";
-    ugKgMinEl.textContent = "";
+    // Скорость НЕ выводим
+    mlHEl.textContent = "";
 
     applyWarning(d, mgPerKgH, ugPerKgMin);
     return;
@@ -188,17 +189,16 @@ function recalc() {
     mlPerH = (ugPerKgH * w) / d.conc;
   }
 
-  // Показываем ТОЛЬКО дозы
+  // Показываем дозы
   mgHEl.textContent = mgPerH.toFixed(3);
   mgKgHEl.textContent = mgPerKgH.toFixed(3);
   ugKgHEl.textContent = ugPerKgH.toFixed(3);
   ugKgMinEl.textContent = ugPerKgMin.toFixed(3);
 
-  // ml/h скрываем
-  mlHEl.textContent = "";
+  // Показываем скорость
+  mlHEl.textContent = mlPerH.toFixed(3);
 
   applyWarning(d, mgPerKgH, ugPerKgMin);
 }
-
 
 
