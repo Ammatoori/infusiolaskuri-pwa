@@ -63,20 +63,28 @@ Object.keys(drugs).forEach(name => {
 drugSelect.addEventListener("change", () => {
   const d = drugs[drugSelect.value];
 
+  // очистка полей (кроме веса)
   doseInput.value = "";
   rateEl.value = "";
+  doseInput.disabled = false;
+  rateEl.disabled = false;
+
+  // очистка результатов
+  clearOutputs();
+
   doseWarningEl.textContent = "";
   concDisplay.textContent = "";
   doseInfoEl.textContent = "";
 
   if (!d) return;
 
+  // обновление концентрации и рекомендаций
   concDisplay.textContent = `${d.conc} ${d.unit === "mg" ? "mg/ml" : "µg/ml"}`;
   doseInfoEl.textContent = d.info;
 
+  // правильная единица дозы
   doseUnitCell.textContent = d.unit === "mg" ? "mg/kg/h" : "µg/kg/min";
 });
-
 
 // -----------------------------
 // 5. Блокировка полей
@@ -173,3 +181,4 @@ function recalc() {
 
   applyWarning(d, mgPerKgH, ugPerKgMin);
 }
+
