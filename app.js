@@ -1,12 +1,38 @@
 // -----------------------------
-// 1. Получение элементов
+// 1. Чтение таблицы laakelista
+// -----------------------------
+function loadLaakelista() {
+  const rows = document.querySelectorAll("#laakelista tr");
+  const data = {};
+
+  rows.forEach(r => {
+    const c = r.querySelectorAll("td");
+    const name = c[0].textContent.trim();
+    const conc = parseFloat(c[1].textContent.trim());
+    const unit = c[2].textContent.trim(); // mg/ml или µg/ml
+    const info = c[3].textContent.trim();
+
+    data[name] = {
+      conc: conc,
+      unit: unit.includes("mg") ? "mg" : "ug",
+      info: info
+    };
+  });
+
+  return data;
+}
+
+const drugs = loadLaakelista();
+
+
+// -----------------------------
+// 2. Элементы
 // -----------------------------
 const drugSelect = document.getElementById("drug");
 const concDisplay = document.getElementById("concDisplay");
 
 const weightEl = document.getElementById("weight");
 const rateEl = document.getElementById("rate");
-
 const doseInput = document.getElementById("doseInput");
 const doseUnitCell = document.getElementById("doseUnitCell");
 
@@ -21,22 +47,18 @@ const doseInfoEl = document.getElementById("doseInfo");
 
 
 // -----------------------------
-// 2. Справочник препаратов
+// 3. Заполнение списка препаратов
 // -----------------------------
-const drugs = {
-  adrenalin:    { concUgPerMl: 10, unit: "ug", info: "Aloitus 0,01–0,05 µg/kg/min. Ylläpito 0,1–0,5 µg/kg/min. Iskemia-riski >1,0 µg/kg/min", maxUgKgMin: 1.0 },
-  nor40:        { concUgPerMl: 40, unit: "ug", info: "Aloitus 0,01–0,05 µg/kg/min. Ylläpito 0,1–0,5 µg/kg/min. Iskemia-riski >1,0 µg/kg/min", maxUgKgMin: 1.0 },
-  nor80:        { concUgPerMl: 80, unit: "ug", info: "Aloitus 0,01–0,05 µg/kg/min. Ylläpito 0,1–0,5 µg/kg/min. Iskemia-riski >1,0 µg/kg/min", maxUgKgMin: 1.0 },
-  dobutamine:   { concMgPerMl: 5,  unit: "mg", info: "Tavallinen annos 2–20 mg/kg/h", maxMgKgH: 20 },
-  milrinone:    { concMgPerMl: 1,  unit: "mg", info: "Aloitus 0,25–0,75 mg/kg/h", maxMgKgH: 0.75 },
-  ketamine:     { concMgPerMl: 25, unit: "mg", info: "Ylläpito 0,5–2 mg/kg/h", maxMgKgH: 2 },
-  propofol:     { concMgPerMl: 20, unit: "mg", info: "Ylläpito 1–4 mg/kg/h", maxMgKgH: 4 },
-  remifentanyl: { concUgPerMl: 50, unit: "ug", info: "Aloitus 0,05–0,2 µg/kg/min", maxUgKgMin: 0.2 }
-};
+Object.keys(drugs).forEach(name => {
+  const opt = document.createElement("option");
+  opt.value = name;
+  opt.textContent = name;
+  drugSelect.appendChild(opt);
+});
 
 
 // -----------------------------
-// 3. Выбор препарата
+// 4. Выбор препарата
 // -----------------------------
 drugSelect.addEventListener("change", () => {
   const d = drugs[drugSelect.value];
@@ -49,19 +71,15 @@ drugSelect.addEventListener("change", () => {
 
   if (!d) return;
 
-  concDisplay.textContent = d.concMgPerMl
-    ? `${d.concMgPerMl} mg/ml`
-    : `${d.concUgPerMl} µg/ml`;
-
+  concDisplay.textContent = `${d.conc} ${d.unit === "mg" ? "mg/ml" : "µg/ml"}`;
   doseInfoEl.textContent = d.info;
 
-  // автоматическое переключение единицы
   doseUnitCell.textContent = d.unit === "mg" ? "mg/kg/h" : "µg/kg/min";
 });
 
 
 // -----------------------------
-// 4. Блокировка полей
+// 5. Блокировка полей
 // -----------------------------
 rateEl.addEventListener("input", () => {
   doseInput.disabled = rateEl.value !== "";
@@ -77,7 +95,7 @@ weightEl.addEventListener("input", recalc);
 
 
 // -----------------------------
-// 5. Основная функция расчёта
+// 6. Расчёт
 // -----------------------------
 function clearOutputs() {
   mgHEl.textContent = "";
@@ -90,8 +108,8 @@ function clearOutputs() {
 
 function applyWarning(drug, mgPerKgH, ugPerKgMin) {
   let high = false;
-  if (drug.maxMgKgH && mgPerKgH > drug.maxMgKgH) high = true;
-  if (drug.maxUgKgMin && ugPerKgMin > drug.maxUgKgMin) high = true;
+  if (drug.unit === "mg" && mgPerKgH > 20) high = true;
+  if (drug.unit === "ug" && ugPerKgMin > 1.0) high = true;
   doseWarningEl.textContent = high ? "Korkea annos!" : "";
 }
 
@@ -116,12 +134,12 @@ function recalc() {
     mlPerH = rate;
 
     if (d.unit === "mg") {
-      mgPerH = mlPerH * d.concMgPerMl;
+      mgPerH = mlPerH * d.conc;
       mgPerKgH = mgPerH / w;
       ugPerKgH = mgPerKgH * 1000;
       ugPerKgMin = ugPerKgH / 60;
     } else {
-      const ugPerH = mlPerH * d.concUgPerMl;
+      const ugPerH = mlPerH * d.conc;
       ugPerKgH = ugPerH / w;
       ugPerKgMin = ugPerKgH / 60;
       mgPerKgH = ugPerKgH / 1000;
@@ -135,7 +153,7 @@ function recalc() {
     mgPerH = mgPerKgH * w;
     ugPerKgH = mgPerKgH * 1000;
     ugPerKgMin = ugPerKgH / 60;
-    mlPerH = mgPerH / d.concMgPerMl;
+    mlPerH = mgPerH / d.conc;
   }
 
   // 3) доза µg/kg/min
@@ -144,7 +162,7 @@ function recalc() {
     ugPerKgH = ugPerKgMin * 60;
     mgPerKgH = ugPerKgH / 1000;
     mgPerH = mgPerKgH * w;
-    mlPerH = (ugPerKgH * w) / d.concUgPerMl;
+    mlPerH = (ugPerKgH * w) / d.conc;
   }
 
   mgHEl.textContent = mgPerH.toFixed(3);
