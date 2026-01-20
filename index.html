@@ -23,10 +23,11 @@
       font: inherit; padding: 0; outline: none;
     }
 
-    /* чуть шире поле Lääke */
+    /* расширенное поле Lääke */
     #drug {
       width: 100%;
       padding-right: 10px;
+      font-size: 16px;
     }
 
     .warning { background: #ffcccc; color: #900; font-weight: 700; }
@@ -45,6 +46,45 @@
       border: 1px solid #90c2ff;
       border-radius: 6px;
       cursor: pointer;
+    }
+
+    /* -----------------------------
+       Мобильная версия
+    ------------------------------*/
+    @media (max-width: 600px) {
+
+      body { padding: 10px; }
+
+      h1 { font-size: 22px; margin-bottom: 15px; }
+
+      table { width: 100%; font-size: 17px; }
+
+      td { padding: 10px; }
+
+      input, select {
+        font-size: 18px;
+        padding: 8px;
+      }
+
+      #drug { font-size: 18px; padding: 8px; }
+
+      tr { height: 55px; }
+
+      #mgH, #mlH, #mgKgH, #ugKgH, #ugKgMin {
+        font-size: 20px;
+        font-weight: 600;
+      }
+
+      #clearAllBtn {
+        width: 100%;
+        font-size: 18px;
+        padding: 14px;
+        margin-top: 25px;
+      }
+
+      .active-field {
+        background: #ffe9a8 !important;
+      }
     }
   </style>
 </head>
@@ -92,7 +132,7 @@
 
     <td class="bold center">Tavoitettu annos</td>
     <td class="gray"><input id="doseInput" type="number" step="0.001"></td>
-    <td class="gray" id="doseUnitCell">mg/kg/h</td>
+    <td class="gray" id="doseUnitCell"></td>
   </tr>
 
   <!-- 4: предупреждение -->
@@ -117,15 +157,4 @@
   <tr class="blue"><td class="bold">µg/kg/h</td><td><span id="ugKgH"></span></td><td></td><td></td><td></td><td></td></tr>
 
   <!-- 9 -->
-  <tr class="blue"><td class="bold">µg/kg/min</td><td><span id="ugKgMin"></span></td><td></td><td></td><td></td><td></td></tr>
-
-  <!-- 10: рекомендации -->
-  <tr><td class="gray bold" colspan="6" id="doseInfo"></td></tr>
-
-</table>
-
-<button id="clearAllBtn">Tyhjennä kaikki</button>
-
-<script src="app.js"></script>
-</body>
-</html>
+  <tr class="blue"><td class="bold">µg/kg/min</td><td><span id="ugKgMin"></span></td><td>
