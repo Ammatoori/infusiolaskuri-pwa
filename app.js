@@ -1,167 +1,189 @@
-// Справочник препаратов
-const drugs = {
-  adrenalin: { concUgPerMl: 10, maxUgKgMin: 1.0 },
-  nor40: { concUgPerMl: 40, maxUgKgMin: 1.0 },
-  nor80: { concUgPerMl: 80, maxUgKgMin: 1.0 },
-  dobutamine: { concMgPerMl: 5, maxUgKgMin: 40 },
-  milrinone: { concMgPerMl: 1, maxUgKgMin: 0.75 },
-  ketamine: { concMgPerMl: 25, maxMgKgH: 2 },
-  propofol: { concMgPerMl: 20, maxMgKgH: 10 },
-  remifentanyl: { concUgPerMl: 50, maxUgKgMin: 0.3 }
-};
-
 const drugSelect = document.getElementById("drug");
-const doseMgField = document.getElementById("doseMg");     // mg/kg/h
-const doseUgField = document.getElementById("doseUg");     // µg/kg/min
-const concDisplay = document.getElementById("concDisplay"); // C2
-const doseWarning = document.getElementById("doseWarning");
-const doseInfo = document.getElementById("doseInfo");
+const concDisplay = document.getElementById("concDisplay");
 
-// Справочник концентраций и рекомендаций
-const drugData = {
-  adrenalin:      { conc: "10 µg/ml",  unit: "µg/kg/min", info: "Aloitus 0,01–0,05 µg/kg/min..." },
-  nor40:          { conc: "40 µg/ml",  unit: "µg/kg/min", info: "Aloitus 0,01–0,05 µg/kg/min..." },
-  nor80:          { conc: "80 µg/ml",  unit: "µg/kg/min", info: "Aloitus 0,01–0,05 µg/kg/min..." },
-  dobutamine:     { conc: "5 mg/ml",   unit: "mg/kg/h",   info: "Tavallinen annos 2–20 mg/kg/h" },
-  milrinone:      { conc: "1 mg/ml",   unit: "mg/kg/h",   info: "Aloitus 0,25–0,75 mg/kg/h" },
-  ketamine:       { conc: "25 mg/ml",  unit: "mg/kg/h",   info: "Ylläpito 0,5–2 mg/kg/h" },
-  propofol:       { conc: "20 mg/ml",  unit: "mg/kg/h",   info: "Ylläpito 1–4 mg/kg/h" },
-  remifentanyl:   { conc: "50 µg/ml",  unit: "µg/kg/min", info: "Aloitus 0,05–0,2 µg/kg/min" }
+const weightEl = document.getElementById("weight");
+const rateEl = document.getElementById("rate");
+
+const doseMgCell = document.getElementById("doseMgCell");
+const doseUgCell = document.getElementById("doseUgCell");
+const doseMgEl = document.getElementById("doseMg");
+const doseUgEl = document.getElementById("doseUg");
+
+const mgHEl = document.getElementById("mgH");
+const mlHEl = document.getElementById("mlH");
+const mgKgHEl = document.getElementById("mgKgH");
+const ugKgHEl = document.getElementById("ugKgH");
+const ugKgMinEl = document.getElementById("ugKgMin");
+
+const doseWarningEl = document.getElementById("doseWarning");
+const doseInfoEl = document.getElementById("doseInfo");
+
+// данные по препаратам
+const drugs = {
+  adrenalin: {
+    name: "Adrenalin 10 µg/ml",
+    concUgPerMl: 10,
+    unit: "ug",
+    info: "Aloitus 0,01–0,05 µg/kg/min. Ylläpito 0,1–0,5 µg/kg/min. Iskemia-riski >1,0 µg/kg/min",
+    maxUgKgMin: 1.0
+  },
+  nor40: {
+    name: "Noradrenalin 40 µg/ml",
+    concUgPerMl: 40,
+    unit: "ug",
+    info: "Aloitus 0,01–0,05 µg/kg/min. Ylläpito 0,1–0,5 µg/kg/min. Iskemia-riski >1,0 µg/kg/min",
+    maxUgKgMin: 1.0
+  },
+  nor80: {
+    name: "Noradrenalin 80 µg/ml",
+    concUgPerMl: 80,
+    unit: "ug",
+    info: "Aloitus 0,01–0,05 µg/kg/min. Ylläpito 0,1–0,5 µg/kg/min. Iskemia-riski >1,0 µg/kg/min",
+    maxUgKgMin: 1.0
+  },
+  dobutamine: {
+    name: "Dobutamine 5 mg/ml",
+    concMgPerMl: 5,
+    unit: "mg",
+    info: "Tavallinen annos 2–20 mg/kg/h",
+    maxMgKgH: 20
+  },
+  milrinone: {
+    name: "Milrinone 1 mg/ml",
+    concMgPerMl: 1,
+    unit: "mg",
+    info: "Aloitus 0,25–0,75 mg/kg/h",
+    maxMgKgH: 0.75
+  },
+  ketamine: {
+    name: "Ketamine 25 mg/ml",
+    concMgPerMl: 25,
+    unit: "mg",
+    info: "Ylläpito 0,5–2 mg/kg/h",
+    maxMgKgH: 2
+  },
+  propofol: {
+    name: "Propofol 20 mg/ml",
+    concMgPerMl: 20,
+    unit: "mg",
+    info: "Ylläpito 1–4 mg/kg/h",
+    maxMgKgH: 4
+  },
+  remifentanyl: {
+    name: "Remifentanyl 50 µg/ml",
+    concUgPerMl: 50,
+    unit: "ug",
+    info: "Aloitus 0,05–0,2 µg/kg/min",
+    maxUgKgMin: 0.2
+  }
 };
 
-// Автоматическое переключение дозы
+function clearOutputs() {
+  mgHEl.textContent = "";
+  mlHEl.textContent = "";
+  mgKgHEl.textContent = "";
+  ugKgHEl.textContent = "";
+  ugKgMinEl.textContent = "";
+  doseWarningEl.textContent = "";
+}
+
+function applyWarning(drug, mgPerKgH, ugPerKgMin) {
+  let high = false;
+  if (drug.maxMgKgH && mgPerKgH > drug.maxMgKgH) high = true;
+  if (drug.maxUgKgMin && ugPerKgMin > drug.maxUgKgMin) high = true;
+  if (high) {
+    doseWarningEl.textContent = "Korkea annos!";
+  } else {
+    doseWarningEl.textContent = "";
+  }
+}
+
+// выбор препарата
 drugSelect.addEventListener("change", () => {
   const key = drugSelect.value;
-  if (!key) return;
+  const d = drugs[key];
+  clearOutputs();
+  doseMgEl.value = "";
+  doseUgEl.value = "";
+  rateEl.value = "";
 
-  const d = drugData[key];
-
-  // Показать концентрацию в C2
-  concDisplay.textContent = d.conc;
-
-  // Автоматически выбрать нужную единицу
-  if (d.unit === "mg/kg/h") {
-    doseMgField.parentElement.style.display = "table-cell";
-    doseUgField.parentElement.style.display = "none";
-    doseUgField.value = "";
-  } else {
-    doseMgField.parentElement.style.display = "none";
-    doseUgField.parentElement.style.display = "table-cell";
-    doseMgField.value = "";
+  if (!d) {
+    concDisplay.textContent = "";
+    doseInfoEl.textContent = "";
+    doseMgCell.style.display = "table-cell";
+    doseUgCell.style.display = "table-cell";
+    return;
   }
 
-  // Показать рекомендации в B15
-  doseInfo.textContent = d.info;
+  // концентрация
+  if (d.concMgPerMl) concDisplay.textContent = `${d.concMgPerMl} mg/ml`;
+  if (d.concUgPerMl) concDisplay.textContent = `${d.concUgPerMl} µg/ml`;
 
-  // Очистить предупреждение
-  doseWarning.textContent = "";
+  // рекомендации
+  doseInfoEl.textContent = d.info;
+
+  // автоматический выбор единицы дозы
+  if (d.unit === "mg") {
+    doseMgCell.style.display = "table-cell";
+    doseUgCell.style.display = "none";
+  } else {
+    doseMgCell.style.display = "none";
+    doseUgCell.style.display = "table-cell";
+  }
 });
 
-
-// Удобный доступ к элементам
-const el = id => document.getElementById(id);
-
-// Поля ввода
-const drugSel = el("drug");
-const weightEl = el("weight");
-const doseMgEl = el("doseMgKgH");
-const doseUgEl = el("doseUgKgMin");
-
-// Ячейки для подсветки ошибок
-const weightCell = el("weightCell");
-const doseMgCell = el("doseMgCell");
-const doseUgCell = el("doseUgCell");
-
-// Вывод
-const mgH = el("mgH");
-const mlH = el("mlH");
-const mgKgH = el("mgKgH");
-const ugKgH = el("ugKgH");
-const ugKgMin = el("ugKgMin");
-
-// Предупреждение
-const doseWarningRow = el("doseWarningRow");
-
-// Заполняем список препаратов
-(function fillDrugs() {
-  drugSel.innerHTML = `<option value="">Valitse...</option>`;
-  for (const key in drugs) {
-    const d = drugs[key];
-    const name =
-      d.concMgPerMl
-        ? `${key} (${d.concMgPerMl} mg/ml)`
-        : `${key} (${d.concUgPerMl} µg/ml)`;
+// блокировка полей: скорость ↔ доза
+rateEl.addEventListener("input", () => {
+  if (rateEl.value !== "") {
+    doseMgEl.disabled = true;
+    doseUgEl.disabled = true;
+  } else {
+    doseMgEl.disabled = false;
+    doseUgEl.disabled = false;
   }
-})();
+  recalc();
+});
 
-// Обновление строки "Vahvuus"
-function updateStrength() {
-  const d = drugs[drugSel.value];
-  if (!d) {
-    el("strength").value = "";
-    return;
+doseMgEl.addEventListener("input", () => {
+  if (doseMgEl.value !== "") {
+    rateEl.disabled = true;
+    doseUgEl.disabled = true;
+  } else {
+    rateEl.disabled = false;
+    doseUgEl.disabled = false;
   }
-  if (d.concMgPerMl) el("strength").value = `${d.concMgPerMl} mg/ml`;
-  if (d.concUgPerMl) el("strength").value = `${d.concUgPerMl} µg/ml`;
-}
+  recalc();
+});
 
-// Проверка корректности числа
-function validateNumber(value, cell) {
-  if (value === "" || value === null) {
-    cell.classList.add("error-cell");
-    return false;
+doseUgEl.addEventListener("input", () => {
+  if (doseUgEl.value !== "") {
+    rateEl.disabled = true;
+    doseMgEl.disabled = true;
+  } else {
+    rateEl.disabled = false;
+    doseMgEl.disabled = false;
   }
-  const num = Number(value);
-  if (isNaN(num) || num <= 0) {
-    cell.classList.add("error-cell");
-    return false;
-  }
-  cell.classList.remove("error-cell");
-  return true;
-}
+  recalc();
+});
 
-// Условное форматирование превышения дозы
-function applyDoseWarning(isHigh) {
-  if (isHigh) doseWarningRow.classList.add("high-dose");
-  else doseWarningRow.classList.remove("high-dose");
-}
+weightEl.addEventListener("input", recalc);
 
-// Главная функция пересчёта
+// основной расчёт
 function recalc() {
-  const d = drugs[drugSel.value];
-  const w = weightEl.value;
-  const doseMg = doseMgEl.value;
-  const doseUg = doseUgEl.value;
+  clearOutputs();
 
-  // Проверка корректности ввода
-  const okDrug = !!d;
-  const okWeight = validateNumber(w, weightCell);
-  const okDoseMg = doseMg === "" ? true : validateNumber(doseMg, doseMgCell);
-  const okDoseUg = doseUg === "" ? true : validateNumber(doseUg, doseUgCell);
+  const key = drugSelect.value;
+  const d = drugs[key];
+  if (!d) return;
 
-  // Если нет препарата или веса — не считаем
-  if (!okDrug || !okWeight) {
-    mgH.textContent = mlH.textContent = mgKgH.textContent =
-      ugKgH.textContent = ugKgMin.textContent = "";
-    applyDoseWarning(false);
-    return;
-  }
+  const w = parseFloat(weightEl.value.replace(",", "."));
+  if (!w || w <= 0) return;
 
-  // Если обе дозы пустые — не считаем
-  if (doseMg === "" && doseUg === "") {
-    mgH.textContent = mlH.textContent = mgKgH.textContent =
-      ugKgH.textContent = ugKgMin.textContent = "";
-    applyDoseWarning(false);
-    return;
-  }
+  const rate = rateEl.value ? parseFloat(rateEl.value.replace(",", ".")) : null;
+  const doseMg = doseMgEl.value ? parseFloat(doseMgEl.value.replace(",", ".")) : null;
+  const doseUg = doseUgEl.value ? parseFloat(doseUgEl.value.replace(",", ".")) : null;
 
-  // Если есть ошибки — не считаем
-  if (!okDoseMg || !okDoseUg) {
-    mgH.textContent = mlH.textContent = mgKgH.textContent =
-      ugKgH.textContent = ugKgMin.textContent = "";
-    applyDoseWarning(false);
-    return;
-  }
+  if (!rate && !doseMg && !doseUg) return;
 
   let mgPerH = 0;
   let mlPerH = 0;
@@ -169,56 +191,59 @@ function recalc() {
   let ugPerKgH = 0;
   let ugPerKgMin = 0;
 
-  const weight = Number(w);
+  // 1) если задана скорость (ml/h)
+  if (rate) {
+    mlPerH = rate;
 
-  // Приоритет: µg/kg/min
-  if (doseUg !== "") {
-    ugPerKgMin = Number(doseUg);
-    ugPerKgH = ugPerKgMin * 60;
-    mgPerKgH = ugPerKgH / 1000;
-    mgPerH = mgPerKgH * weight;
-
-    if (d.concMgPerMl) mlPerH = mgPerH / d.concMgPerMl;
-    if (d.concUgPerMl) mlPerH = (ugPerKgH * weight) / d.concUgPerMl;
+    if (d.concMgPerMl) {
+      mgPerH = mlPerH * d.concMgPerMl;
+      mgPerKgH = mgPerH / w;
+      ugPerKgH = mgPerKgH * 1000;
+      ugPerKgMin = ugPerKgH / 60;
+    } else if (d.concUgPerMl) {
+      const ugPerH = mlPerH * d.concUgPerMl;
+      ugPerKgH = ugPerH / w;
+      ugPerKgMin = ugPerKgH / 60;
+      mgPerKgH = ugPerKgH / 1000;
+      mgPerH = mgPerKgH * w;
+    }
   }
 
-  // Если введён mg/kg/h
-  if (doseMg !== "" && doseUg === "") {
-    mgPerKgH = Number(doseMg);
-    mgPerH = mgPerKgH * weight;
+  // 2) если задана доза mg/kg/h
+  if (!rate && doseMg && d.unit === "mg") {
+    mgPerKgH = doseMg;
+    mgPerH = mgPerKgH * w;
     ugPerKgH = mgPerKgH * 1000;
     ugPerKgMin = ugPerKgH / 60;
 
-    if (d.concMgPerMl) mlPerH = mgPerH / d.concMgPerMl;
-    if (d.concUgPerMl) mlPerH = (ugPerKgH * weight) / d.concUgPerMl;
+    if (d.concMgPerMl) {
+      mlPerH = mgPerH / d.concMgPerMl;
+    } else if (d.concUgPerMl) {
+      const ugPerH = mgPerH * 1000;
+      mlPerH = ugPerH / d.concUgPerMl;
+    }
   }
 
-  // Вывод
-  mgH.textContent = mgPerH.toFixed(3);
-  mlH.textContent = mlPerH.toFixed(3);
-  mgKgH.textContent = mgPerKgH.toFixed(3);
-  ugKgH.textContent = ugPerKgH.toFixed(3);
-  ugKgMin.textContent = ugPerKgMin.toFixed(3);
+  // 3) если задана доза µg/kg/min
+  if (!rate && doseUg && d.unit === "ug") {
+    ugPerKgMin = doseUg;
+    ugPerKgH = ugPerKgMin * 60;
+    mgPerKgH = ugPerKgH / 1000;
+    mgPerH = mgPerKgH * w;
 
-  // Проверка превышения дозы
-  let high = false;
-  if (d.maxUgKgMin && ugPerKgMin > d.maxUgKgMin) high = true;
-  if (d.maxMgKgH && mgPerKgH > d.maxMgKgH) high = true;
+    if (d.concUgPerMl) {
+      const ugPerH = ugPerKgH * w;
+      mlPerH = ugPerH / d.concUgPerMl;
+    } else if (d.concMgPerMl) {
+      mlPerH = mgPerH / d.concMgPerMl;
+    }
+  }
 
-  applyDoseWarning(high);
+  mgHEl.textContent = mgPerH ? mgPerH.toFixed(3) : "";
+  mlHEl.textContent = mlPerH ? mlPerH.toFixed(3) : "";
+  mgKgHEl.textContent = mgPerKgH ? mgPerKgH.toFixed(3) : "";
+  ugKgHEl.textContent = ugPerKgH ? ugPerKgH.toFixed(3) : "";
+  ugKgMinEl.textContent = ugPerKgMin ? ugPerKgMin.toFixed(3) : "";
+
+  applyWarning(d, mgPerKgH, ugPerKgMin);
 }
-
-// События
-drugSel.addEventListener("change", () => {
-  updateStrength();
-  recalc();
-});
-weightEl.addEventListener("input", recalc);
-doseMgEl.addEventListener("input", recalc);
-doseUgEl.addEventListener("input", recalc);
-
-// PWA service worker
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("sw.js");
-}
-
