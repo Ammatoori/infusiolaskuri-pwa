@@ -1,3 +1,6 @@
+// -----------------------------
+// 1. Получение элементов
+// -----------------------------
 const drugSelect = document.getElementById("drug");
 const concDisplay = document.getElementById("concDisplay");
 
@@ -22,7 +25,10 @@ const ugKgMinEl = document.getElementById("ugKgMin");
 const doseWarningEl = document.getElementById("doseWarning");
 const doseInfoEl = document.getElementById("doseInfo");
 
-// данные по препаратам
+
+// -----------------------------
+// 2. Справочник препаратов
+// -----------------------------
 const drugs = {
   adrenalin:    { concUgPerMl: 10, unit: "ug", info: "Aloitus 0,01–0,05 µg/kg/min. Ylläpito 0,1–0,5 µg/kg/min. Iskemia-riski >1,0 µg/kg/min", maxUgKgMin: 1.0 },
   nor40:        { concUgPerMl: 40, unit: "ug", info: "Aloitus 0,01–0,05 µg/kg/min. Ylläpito 0,1–0,5 µg/kg/min. Iskemia-riski >1,0 µg/kg/min", maxUgKgMin: 1.0 },
@@ -34,39 +40,28 @@ const drugs = {
   remifentanyl: { concUgPerMl: 50, unit: "ug", info: "Aloitus 0,05–0,2 µg/kg/min", maxUgKgMin: 0.2 }
 };
 
-function clearOutputs() {
-  mgHEl.textContent = "";
-  mlHEl.textContent = "";
-  mgKgHEl.textContent = "";
-  ugKgHEl.textContent = "";
-  ugKgMinEl.textContent = "";
-  doseWarningEl.textContent = "";
-}
 
-function applyWarning(drug, mgPerKgH, ugPerKgMin) {
-  let high = false;
-  if (drug.maxMgKgH && mgPerKgH > drug.maxMgKgH) high = true;
-  if (drug.maxUgKgMin && ugPerKgMin > drug.maxUgKgMin) high = true;
-  doseWarningEl.textContent = high ? "Korkea annos!" : "";
-}
-
-// выбор препарата
+// -----------------------------
+// 3. Выбор препарата
+// -----------------------------
 drugSelect.addEventListener("change", () => {
   const key = drugSelect.value;
   const d = drugs[key];
-  clearOutputs();
+
+  // очистка
   doseMgEl.value = "";
   doseUgEl.value = "";
   rateEl.value = "";
+  doseWarningEl.textContent = "";
+  concDisplay.textContent = "";
+  doseInfoEl.textContent = "";
 
-  if (!d) {
-    concDisplay.textContent = "";
-    doseInfoEl.textContent = "";
-    return;
-  }
+  if (!d) return;
 
   // концентрация
-  concDisplay.textContent = d.concMgPerMl ? `${d.concMgPerMl} mg/ml` : `${d.concUgPerMl} µg/ml`;
+  concDisplay.textContent = d.concMgPerMl
+    ? `${d.concMgPerMl} mg/ml`
+    : `${d.concUgPerMl} µg/ml`;
 
   // рекомендации
   doseInfoEl.textContent = d.info;
@@ -87,7 +82,10 @@ drugSelect.addEventListener("change", () => {
   }
 });
 
-// блокировка полей: скорость ↔ доза
+
+// -----------------------------
+// 4. Блокировка полей
+// -----------------------------
 rateEl.addEventListener("input", () => {
   if (rateEl.value !== "") {
     doseMgEl.disabled = true;
@@ -123,7 +121,26 @@ doseUgEl.addEventListener("input", () => {
 
 weightEl.addEventListener("input", recalc);
 
-// основной расчёт
+
+// -----------------------------
+// 5. Основная функция расчёта
+// -----------------------------
+function clearOutputs() {
+  mgHEl.textContent = "";
+  mlHEl.textContent = "";
+  mgKgHEl.textContent = "";
+  ugKgHEl.textContent = "";
+  ugKgMinEl.textContent = "";
+  doseWarningEl.textContent = "";
+}
+
+function applyWarning(drug, mgPerKgH, ugPerKgMin) {
+  let high = false;
+  if (drug.maxMgKgH && mgPerKgH > drug.maxMgKgH) high = true;
+  if (drug.maxUgKgMin && ugPerKgMin > drug.maxUgKgMin) high = true;
+  doseWarningEl.textContent = high ? "Korkea annos!" : "";
+}
+
 function recalc() {
   clearOutputs();
 
