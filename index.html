@@ -2,170 +2,304 @@
 <html lang="fi">
 <head>
   <meta charset="UTF-8" />
-  <title>Infuusiolaskuri</title>
+  <title>Infuusiolaskuri — iOS Style</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <style>
-    body { font-family: system-ui, sans-serif; background: #f5f5f5; padding: 20px; }
-    h1 { text-align: center; font-size: 28px; margin-bottom: 20px; }
+    /* ------------------------------
+       BASE
+    ------------------------------ */
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+      background: #f2f2f7;
+      margin: 0;
+      padding: 20px;
+      color: #000;
+    }
 
-    table { border-collapse: collapse; width: 100%; max-width: 900px; margin: auto; table-layout: fixed; }
-    td { border: 1px solid #c0c0c0; padding: 6px; font-size: 15px; }
+    h1 {
+      text-align: center;
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 25px;
+      color: #111;
+    }
 
-    .pink { background: #ffe6f2; }
-    .gray { background: #f2f2f2; }
-    .blue { background: #e6f3ff; }
+    /* ------------------------------
+       iOS CARD
+    ------------------------------ */
+    .card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 18px 20px;
+      margin-bottom: 18px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
 
-    .bold { font-weight: 700; }
-    .center { text-align: center; }
+    .card-title {
+      font-size: 17px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: #333;
+    }
+
+    /* ------------------------------
+       INPUTS (iOS style)
+    ------------------------------ */
+    .input-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid #e5e5ea;
+    }
+
+    .input-row:last-child {
+      border-bottom: none;
+    }
+
+    .input-label {
+      font-size: 16px;
+      color: #555;
+    }
 
     input, select {
-      width: 100%; border: none; background: transparent;
-      font: inherit; padding: 0; outline: none;
+      font-size: 17px;
+      border: none;
+      background: transparent;
+      text-align: right;
+      width: 120px;
+      outline: none;
+      color: #007aff;
     }
 
-    /* расширенное поле Lääke */
-    #drug {
-      width: 100%;
-      padding-right: 10px;
-      font-size: 16px;
+    /* ------------------------------
+       RESULTS (iOS Calculator style)
+    ------------------------------ */
+    .result-block {
+      padding: 10px 0;
+      border-bottom: 1px solid #e5e5ea;
     }
 
-    .warning { background: #ffcccc; color: #900; font-weight: 700; }
-
-    .active-field {
-      background: #fff3cd !important;
-      transition: background 0.2s;
+    .result-label {
+      font-size: 15px;
+      color: #666;
     }
 
+    .result-value {
+      font-size: 24px;
+      font-weight: 600;
+      text-align: right;
+      color: #000;
+      margin-top: 4px;
+    }
+
+    /* ------------------------------
+       BUTTON
+    ------------------------------ */
     #clearAllBtn {
-      display: block;
-      margin: 20px auto 0;
-      padding: 10px 20px;
-      font-size: 16px;
-      background: #e6f3ff;
-      border: 1px solid #90c2ff;
-      border-radius: 6px;
+      width: 100%;
+      background: #007aff;
+      color: #fff;
+      border: none;
+      padding: 14px;
+      font-size: 18px;
+      border-radius: 12px;
+      margin-top: 20px;
       cursor: pointer;
     }
 
-    /* -----------------------------
-       Мобильная версия
-    ------------------------------*/
-    @media (max-width: 600px) {
+    /* ------------------------------
+       DARK MODE
+    ------------------------------ */
+    body.dark {
+      background: #1c1c1e;
+      color: #fff;
+    }
 
-      body { padding: 10px; }
+    body.dark .card {
+      background: #2c2c2e;
+      box-shadow: none;
+    }
 
-      h1 { font-size: 22px; margin-bottom: 15px; }
+    body.dark .card-title {
+      color: #fff;
+    }
 
-      table { width: 100%; font-size: 17px; }
+    body.dark .input-label {
+      color: #ccc;
+    }
 
-      td { padding: 10px; }
+    body.dark input, body.dark select {
+      color: #0a84ff;
+    }
 
-      input, select {
-        font-size: 18px;
-        padding: 8px;
-      }
+    body.dark .result-label {
+      color: #aaa;
+    }
 
-      #drug { font-size: 18px; padding: 8px; }
+    body.dark .result-value {
+      color: #fff;
+    }
 
-      tr { height: 55px; }
+    body.dark #clearAllBtn {
+      background: #0a84ff;
+    }
 
-      #mgH, #mlH, #mgKgH, #ugKgH, #ugKgMin {
-        font-size: 20px;
-        font-weight: 600;
-      }
+    /* Theme toggle */
+    #themeToggle {
+      position: fixed;
+      top: 12px;
+      right: 12px;
+      background: #ddd;
+      border: 1px solid #aaa;
+      padding: 6px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      z-index: 999;
+    }
 
-      #clearAllBtn {
-        width: 100%;
-        font-size: 18px;
-        padding: 14px;
-        margin-top: 25px;
-      }
-
-      .active-field {
-        background: #ffe9a8 !important;
-      }
+    body.dark #themeToggle {
+      background: #3a3a3c;
+      color: #fff;
+      border-color: #666;
     }
   </style>
 </head>
+
 <body>
+
+<button id="themeToggle">🌙</button>
 
 <h1>Infuusiolaskuri</h1>
 
-<!-- Скрытая таблица laakelista -->
+<!-- Hidden laakelista -->
 <table id="laakelista" style="display:none;">
-  <tr><td>Adrenalin 20 µg/ml</td><td>20</td><td>µg/ml</td><td>Aloitus 0,01–0,05 µg/kg/min. Ylläpito 0,1–0,5 µg/kg/min. Iskemia-riski >1,0 µg/kg/min</td></tr>
-  <tr><td>Noradrenalin 40 µg/ml</td><td>40</td><td>µg/ml</td><td>Aloitus 0,01–0,05 µg/kg/min. Ylläpito 0,1–0,5 µg/kg/min. Iskemia-riski >1,0 µg/kg/min</td></tr>
-  <tr><td>Noradrenalin 80 µg/ml</td><td>80</td><td>µg/ml</td><td>Aloitus 0,01–0,05 µg/kg/min. Ylläpito 0,1–0,5 µg/kg/min. Iskemia-riski >1,0 µg/kg/min</td></tr>
-  <tr><td>Dobutamine 500 µg/ml</td><td>500</td><td>µg/ml</td><td>2–20 µg/kg/min</td></tr>
-  <tr><td>Milrinone 200 µg/ml</td><td>200</td><td>µg/ml</td><td>0,25–0,75 µg/kg/min</td></tr>
-  <tr><td>Ketamine 25 mg/ml</td><td>25</td><td>mg/ml</td><td>0,5–2 mg/kg/h</td></tr>
-  <tr><td>Propofol 20 mg/ml</td><td>20</td><td>mg/ml</td><td>1–4 mg/kg/h</td></tr>
-  <tr><td>Remifentanyl 50 µg/ml</td><td>50</td><td>µg/ml</td><td>0,05–0,2 µg/kg/min</td></tr>
+  <tr><td>Remifentanyl 50 µg/ml</td><td>50</td><td>µg/ml</td><td>0.05</td><td>0.2</td></tr>
+  <tr><td>Propofol 20 mg/ml</td><td>20</td><td>mg/ml</td><td>1</td><td>4</td></tr>
+  <tr><td>Ketamine 25 mg/ml</td><td>25</td><td>mg/ml</td><td>0.5</td><td>2</td></tr>
+  <tr><td>Milrinone 200 µg/ml</td><td>200</td><td>µg/ml</td><td>0.25</td><td>0.75</td></tr>
+  <tr><td>Dobutamine 500 µg/ml</td><td>500</td><td>µg/ml</td><td>2</td><td>20</td></tr>
+  <tr><td>Noradrenalin 80 µg/ml</td><td>80</td><td>µg/ml</td><td>0.01</td><td>0.5</td></tr>
+  <tr><td>Noradrenalin 40 µg/ml</td><td>40</td><td>µg/ml</td><td>0.01</td><td>0.5</td></tr>
+  <tr><td>Adrenalin 20 µg/ml</td><td>20</td><td>µg/ml</td><td>0.01</td><td>0.5</td></tr>
 </table>
 
-<table>
+<!-- ------------------------------
+     CARD: LÄÄKE
+------------------------------ -->
+<div class="card">
+  <div class="card-title">Lääke</div>
 
-  <!-- 1: Lääke -->
-  <tr class="pink">
-    <td class="bold">Lääke</td>
-    <td class="gray">
-      <select id="drug"></select>
-    </td>
-    <td class="gray" id="concDisplay"></td>
-    <td></td><td></td><td></td>
-  </tr>
+  <div class="input-row">
+    <div class="input-label">Valitse</div>
+    <select id="drug"></select>
+  </div>
 
-  <!-- 2: Paino -->
-  <tr class="pink">
-    <td class="bold">Paino</td>
-    <td class="gray"><input id="weight" type="number" step="0.1"></td>
-    <td class="gray">kg</td>
-    <td></td><td></td><td></td>
-  </tr>
+  <div class="input-row">
+    <div class="input-label">Pitoisuus</div>
+    <div id="concDisplay" class="input-label" style="color:#007aff;"></div>
+  </div>
+</div>
 
-  <!-- 3: Nopeus + Tavoitettu annos -->
-  <tr class="pink">
-    <td class="bold">Nopeus</td>
-    <td class="gray"><input id="rate" type="number" step="0.01"></td>
-    <td class="gray">ml/h</td>
+<!-- ------------------------------
+     CARD: PAINO
+------------------------------ -->
+<div class="card">
+  <div class="card-title">Paino</div>
 
-    <td class="bold center">Tavoitettu annos</td>
-    <td class="gray"><input id="doseInput" type="number" step="0.001"></td>
-    <td class="gray" id="doseUnitCell"></td>
-  </tr>
+  <div class="input-row">
+    <div class="input-label">kg</div>
+    <input id="weight" type="number" step="0.1">
+  </div>
+</div>
 
-  <!-- 4: предупреждение -->
-  <tr><td class="warning" id="doseWarning" colspan="6"></td></tr>
+<!-- ------------------------------
+     CARD: NOPEUS / ANNOS
+------------------------------ -->
+<div class="card">
+  <div class="card-title">Annos / Nopeus</div>
 
-  <!-- 5: заголовки результатов -->
-  <tr class="blue">
-    <td class="bold">Annokset</td><td></td><td></td>
-    <td class="bold">Nopeus</td><td></td><td></td>
-  </tr>
+  <div class="input-row">
+    <div class="input-label">Nopeus (ml/h)</div>
+    <input id="rate" type="number" step="0.01">
+  </div>
 
-  <!-- 6: mg/h + ml/h -->
-  <tr class="blue">
-    <td class="bold">mg/h</td><td><span id="mgH"></span></td><td></td>
-    <td class="bold">ml/h</td><td><span id="mlH"></span></td><td></td>
-  </tr>
+  <div class="input-row">
+    <div class="input-label">Tavoitettu annos</div>
+    <input id="doseInput" type="number" step="0.001">
+  </div>
 
-  <!-- 7 -->
-  <tr class="blue"><td class="bold">mg/kg/h</td><td><span id="mgKgH"></span></td><td></td><td></td><td></td><td></td></tr>
+  <div class="input-row">
+    <div class="input-label">Yksikkö</div>
+    <div id="doseUnitCell" class="input-label" style="color:#007aff;"></div>
+  </div>
 
-  <!-- 8 -->
-  <tr class="blue"><td class="bold">µg/kg/h</td><td><span id="ugKgH"></span></td><td></td><td></td><td></td><td></td></tr>
+  <div id="doseWarning" style="color:#d00; margin-top:10px; font-weight:600;"></div>
+</div>
 
-  <!-- 9 -->
-  <tr class="blue"><td class="bold">µg/kg/min</td><td><span id="ugKgMin"></span></td><td></td><td></td><td></td><td></td></tr>
+<!-- ------------------------------
+     CARD: RESULTS
+------------------------------ -->
+<div class="card">
+  <div class="card-title">Tulokset</div>
 
-  <!-- 10: рекомендации -->
-  <tr><td class="gray bold" colspan="6" id="doseInfo"></td></tr>
+  <div class="result-block">
+    <div class="result-label">Laskettu nopeus (ml/h)</div>
+    <div class="result-value" id="mlH"></div>
+  </div>
 
-</table>
+  <div class="result-block">
+    <div class="result-label">mg/h</div>
+    <div class="result-value" id="mgH"></div>
+  </div>
+
+  <div class="result-block">
+    <div class="result-label">mg/kg/h</div>
+    <div class="result-value" id="mgKgH"></div>
+  </div>
+
+  <div class="result-block">
+    <div class="result-label">µg/kg/h</div>
+    <div class="result-value" id="ugKgH"></div>
+  </div>
+
+  <div class="result-block">
+    <div class="result-label">µg/kg/min</div>
+    <div class="result-value" id="ugKgMin"></div>
+  </div>
+
+  <div class="result-block">
+    <div class="result-label">Suositus</div>
+    <div class="result-value" id="doseInfo"></div>
+  </div>
+</div>
 
 <button id="clearAllBtn">Tyhjennä kaikki</button>
 
 <script src="app.js"></script>
+
+<script>
+  /* Auto theme */
+  function applySystemTheme() {
+    if (localStorage.getItem("theme") === "light") return;
+    if (localStorage.getItem("theme") === "dark") {
+      document.body.classList.add("dark");
+      return;
+    }
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    document.body.classList.toggle("dark", prefersDark);
+  }
+
+  applySystemTheme();
+  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", applySystemTheme);
+
+  document.getElementById("themeToggle").onclick = () => {
+    document.body.classList.toggle("dark");
+    localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark" : "light");
+  };
+</script>
+
 </body>
 </html>
